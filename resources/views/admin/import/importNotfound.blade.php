@@ -21,7 +21,7 @@
             <td>{{$item['order_sn']}}</td>
             <td>{{$item['goods_name']}}</td>
             <td>{{$item['goods_attr_name']}}</td>
-            <td></td>
+            <td>{{$item['consignee']}}</td>
         </tr>
         @endforeach
         </tbody>

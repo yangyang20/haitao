@@ -36,6 +36,12 @@ class ImportService
         'int'=>'数值',
         'text'=>'长文本'
     ];
+//    创建的字段类型长度
+	public static $field_length = [
+		'varchar'=>'255',
+		'int'=>'11',
+		'text'=>'0'
+	];
 
 
     public function __construct()
@@ -64,13 +70,12 @@ class ImportService
             foreach ($input['table'] as $item){
                 $validator = Validator::make($item, [
                     'title' => 'required',
-                    'col' => 'required|alpha',
 //                    'tag_id'=>'required|Numeric',
                 ]);
                 if ($validator->fails()) {
                     throw new \Exception($validator->errors()->first());
                 }
-                $_item = $this->createTableStructure($item['title'],$item['col'],"",'varchar',255, true,$item['tag_id']);
+                $_item = $this->createTableStructure($item['title'],"",$item['type'],self::$field_length[$item['type']], true,$item['tag_id']);
                 array_push($table,$_item);
             }
             $model = new ImportTplModel();
@@ -81,7 +86,7 @@ class ImportService
                 'start_line'=>$input['start_line'],
                 'table_name'=>$_name,
                 'add_uid'=>session('user_info.id'),
-                'table'=>serialize($table)
+                'table_config'=>serialize($table)
             ];
 
             $model->insertData($data);
@@ -101,14 +106,13 @@ class ImportService
     /**
      * 创建数据表结构
      */
-    public function createTableStructure($title,$col="",$filter="",$type='varchar',$length=255,$is_null=true,$tag_id=""){
+    public function createTableStructure($title,$filter="",$type='varchar',$length=255,$is_null=true,$tag_id=""){
         if (empty($filter)){
             $filter =Common::getPinYinFirstLetter($title);
             $filter = strtolower($filter);
         }
         return [
             'title'=>$title,
-            'col'=>$col,
             'type'=>$type,
             'length'=>$length,
             'filter'=>$filter,
@@ -121,9 +125,9 @@ class ImportService
      * 添加固定的元素
      */
     public function addTableFilter($table){
-        $filter = $this->createTableStructure('文件模板id',"",'import_tpl_id','int',5,false);
+        $filter = $this->createTableStructure('文件模板id','import_tpl_id','int',5,false);
         array_push($table,$filter);
-        $filter = $this->createTableStructure('导入的文件id',"",'file_id','int',11,false);
+        $filter = $this->createTableStructure('导入的文件id','file_id','int',11,false);
         array_push($table,$filter);
         return $table;
     }
@@ -137,7 +141,8 @@ class ImportService
 		unset($table[0]);
 	    $tableTitlePY = Common::pinYinTransform($tableTitle);
 		$tplInfo = $this->model->getDataInfo($tplId);
-		$tableConfig = unserialize($tplInfo['table']);
+		$tableConfig = unserialize($tplInfo['table_config']);
+
 	    $filterArr = $this->filterTable($tableTitlePY,$tableConfig);
 
 	    $tplData = $this->createTplData($table,$filterArr);
@@ -284,6 +289,8 @@ class ImportService
 			$orderCount+=1;
 		    $order = [
 		        'goods_id'=>$item['goods_id'],
+			    'goods_name'=>$item['goods_name'],
+			    'goods_attr_name'=>$item['goods_attr_name'],
 			    'goods_attr_id'=>$item['attr_id'],
 			    'goods_attr_count'=>$item['attr_count'],
 			    'goods_count'=>$item['goods_count'],

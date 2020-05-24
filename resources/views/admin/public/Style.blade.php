@@ -7,6 +7,9 @@
     .w100{
         width: 100px;
     }
+    .w150{
+        width: 150px;
+    }
     .w200{
         width: 200px;
     }

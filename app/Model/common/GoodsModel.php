@@ -3,6 +3,7 @@
 namespace App\Model\common;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 
 class GoodsModel extends Model
@@ -16,14 +17,16 @@ class GoodsModel extends Model
     //    是否维护create_at和update_at字段
         public $timestamps = false;
 
+        use SoftDeletes;
     //    禁用
         const STATUS_INACTIVE=0;
     //    活跃
         const STATUS_ACTIVE=1;
-//        产品别名
-        const GOODS_ALIAS=1;
-//        规格别名
-        const ATTR_ALIAS=2;
+
+		public static $status_type = [
+			self::STATUS_INACTIVE=>'待审核',
+			self::STATUS_ACTIVE=>'已审核'
+		];
 
         public function getList($map,$page=10){
             $res = $this->where($map)->paginate($page);
@@ -41,10 +44,6 @@ class GoodsModel extends Model
 			return $res;
 		}
 
-		public function getAliasInfo($map=[],$type=self::GOODS_ALIAS){
-        	DB::table('goods_alias')->where($map)->where('type',$type)->first();
-		}
-
 		public function getInfo($id){
 			$res = $this->find($id);
 			return $res;
@@ -57,8 +56,6 @@ class GoodsModel extends Model
             $res = $this->where('id',$id)->delete();
             return $res;
         }
-
-
 
         public function updateData($id,$update=[]){
             $res = $this->where('id',$id)->update($update);

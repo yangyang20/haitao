@@ -67,6 +67,11 @@ class UserModel extends Model
         return $res;
     }
 
+	public function getColumnsValue($map,$value){
+		$res = $this->where($map)->value($value);
+		return $res;
+	}
+
     public function updateUser($id,$update=[]){
         $res = $this->where('id',$id)->update($update);
         return $res;

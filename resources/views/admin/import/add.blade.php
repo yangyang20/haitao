@@ -60,10 +60,10 @@
                             <table class="config-table">
                                 <thead>
                                 <tr>
-                                    <td>
-                                        表格对应列名
-                                        <div class="td-tips">输入字母如：A</div>
-                                    </td>
+{{--                                    <td>--}}
+{{--                                        表格对应列名--}}
+{{--                                        <div class="td-tips">输入字母如：A</div>--}}
+{{--                                    </td>--}}
                                     <td class="w200">
                                         表格对应列标题
                                         <div class="td-tips">请输入列标题，如 订单编号。</div>
@@ -82,12 +82,12 @@
                                 <tbody class="config-list">
 
                                 <tr class="item" data-index="0">
-                                    <td>
-                                        <div class="layui-input-inline">
-                                            <input type="text" class="layui-input " name="table[0][col]"  value="" placeholder="请输入列名" >
-                                        </div>
+{{--                                    <td>--}}
+{{--                                        <div class="layui-input-inline">--}}
+{{--                                            <input type="text" class="layui-input " name="table[0][col]"  value="" placeholder="请输入列名" >--}}
+{{--                                        </div>--}}
 
-                                    </td>
+{{--                                    </td>--}}
                                     <td>
                                         <div class="layui-input-inline">
                                             <input type="text" class="layui-input" name="table[0][title]"  value="" placeholder="请输入标题名" >
@@ -202,14 +202,14 @@
             })
             form.render();
         }
-        exports('addConfig', addConfig);
+        exports('addItem', addItem);
 
     });
 
 
 
     //删除行
-    function remitem(present) {
+    function remItem(present) {
         let parent = present.parents('tr')
         parent.remove()
     }
@@ -221,12 +221,12 @@
 
 <script type="text/html" id="tpl">
     <tr class="item" data-index="<%d.index%>">
-        <td>
-            <div class="layui-input-inline">
-                <input type="text" class="layui-input " name="table[<%d.index%>][col]"  value="" placeholder="请输入列名" >
-            </div>
+{{--        <td>--}}
+{{--            <div class="layui-input-inline">--}}
+{{--                <input type="text" class="layui-input " name="table[<%d.index%>][col]"  value="" placeholder="请输入列名" >--}}
+{{--            </div>--}}
 
-        </td>
+{{--        </td>--}}
         <td>
             <div class="layui-input-inline">
                 <input type="text" class="layui-input" name="table[<%d.index%>][title]"  value="" placeholder="请输入标题名" >
@@ -252,7 +252,7 @@
             </div>
         </td>
         <td>
-            <a class="layui-btn layui-btn-sm layui-btn-danger" href="javascript:remConfig()">删除</a>
+            <a class="layui-btn layui-btn-sm layui-btn-danger" href="javascript:remItem()">删除</a>
         </td>
     </tr>
 

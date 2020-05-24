@@ -8,78 +8,61 @@
     <title>Document</title>
     @include('admin.public.Script')
     @include('admin.public.Style')
+    <style>
+        .main{
+            width: 70%;
+            margin: 20px auto;
+            padding: 20px;
+        }
+    </style>
 </head>
 <body>
-    <div>
+    <div class="main">
         <form class="layui-form">
-            <table class="fill_table">
-                <tbody>
+            <div class="layui-form-item">
+                <label class="layui-form-label">excel文件：</label>
+                <div class="layui-input-block">
+                    <div class="layui-upload">
+                        <button type="button" class="layui-btn layui-btn-normal" id="excelFile">选择文件</button>
+                        <button type="button" class="layui-btn" id="excelUpload">开始上传</button>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">文件模板：</label>
 
-                <tr>
-                    <th>
-                        <label class="layui-form-label">excel文件：</label>
-                    </th>
-                    <td>
-                        <div class="layui-upload">
-                            <button type="button" class="layui-btn layui-btn-normal" id="excelFile">选择文件</button>
-                            <button type="button" class="layui-btn" id="excelUpload">开始上传</button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <th>
-                        <label class="layui-form-label">文件模板：</label>
-                    </th>
-                    <td>
-                        <div class="layui-input-inline">
-                            <input type="text" id="tpl_name" class="layui-input" placeholder="" onkeyup="tplNameSearch($(this).val())">
-                        </div>
+                <div class="layui-input-inline">
+                    <input type="text" id="tpl_name" class="layui-input w200" placeholder="" onkeyup="tplNameSearch($(this).val())">
+                </div>
 
-                        <div class="search-result tpl_name_search_result" style="display: none"></div>
-                        <div class="layui-input-inline">
-                            <select name="tpl_id">
-                                <option value="">请选择</option>
-                                @foreach($tpl_list as $item)
-                                <option value="{{$item->id}}">{{$item->name}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <th>
-                        <label class="layui-form-label">经销商：</label>
-                    </th>
-                    <td><span class="channel"></span></td>
-                </tr>
+{{--                    <div class="search-result tpl_name_search_result" style="display: none"></div>--}}
+                <div class="layui-input-inline">
+                    <select name="tpl_id">
+                        <option value="">请选择</option>
+                        @foreach($tpl_list as $item)
+                            <option value="{{$item->id}}">{{$item->name}}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">经销商：</label>
+                <div class="layui-input-block">
+                    <span class="channel"></span>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">表格预览：</label>
+                <div class="layui-input-block" id="import-review">
 
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">上传结果：</label>
+                <div class="layui-input-block">
 
-                <tr>
-                    <th>
-                        <label class="layui-form-label">表格预览：</label>
-                    </th>
-                    <td id="import-review">
-
-                    </td>
-                </tr>
-                <tr>
-                    <th>
-                        <label class="layui-form-label">上传结果：</label>
-                    </th>
-                    <td id="run-log">
-
-                    </td>
-                </tr>
-                </tbody>
-                <tfoot>
-                <tr>
-                    <th></th>
-                    <td>
-                        <input type="submit" class="layui-btn layui-btn-warm"  value="确认导入">
-                    </td>
-                </tr>
-                </tfoot>
-            </table>
+                </div>
+            </div>
         </form>
     </div>
 </body>
@@ -110,6 +93,7 @@
             ,done: function(res){
                 layer.closeAll()
                 console.log(res)
+                $('#import-review').empty()
                 if (res.status == success){
                     layer.msg(res.msg);
                     $('#import-review').append(res.data.html);

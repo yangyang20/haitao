@@ -34,4 +34,5 @@ Route::group(['prefix'=>'admin','namespace'=>'admin','middleware'=>'checkLogin']
     Route::resource("import","ImportTplController");
     Route::get("importOrderIndex","importTplController@importOrderIndex");
     Route::post("importOrderPreview","importTplController@importOrderPreview");
+    Route::resource("goods","GoodsController");
 });
