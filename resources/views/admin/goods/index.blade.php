@@ -33,13 +33,17 @@
 				<div class="layui-card-body ">
 					<form class="layui-form layui-col-space5">
 						<div class="layui-inline layui-show-xs-block">
-							<input type="text" name="title" placeholder="请输入标题" value="" autocomplete="off"
+							<input type="text" name="id" placeholder="请输入商品id" value="" autocomplete="off"
 							       class="layui-input">
 						</div>
 						<div class="layui-inline layui-show-xs-block">
-							<input type="text" name="synopsis" placeholder="请输入简介" value="" autocomplete="off"
-							       class="layui-input">
+							<input type="text" name="goods_name" placeholder="请输入商品名称或者别名" value="" autocomplete="off"
+							       class="layui-input w200">
 						</div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <input type="text" name="brand_name" placeholder="请输入品牌方" value="" autocomplete="off"
+                                   class="layui-input">
+                        </div>
 						<div class="layui-inline layui-show-xs-block">
 							<button class="layui-btn" lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
 						</div>
@@ -47,7 +51,7 @@
 				</div>
 				<div class="layui-card-header">
 					<button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
-					<button class="layui-btn" onclick="xadmin.open('添加历程','{{url('admin/articles/create')}}',600,400)"><i
+					<button class="layui-btn" onclick="xadmin.open('添加商品','{{url('admin/goods/create')}}',600,400)"><i
 								class="layui-icon"></i>添加
 					</button>
 				</div>
@@ -95,9 +99,10 @@
                             <a onclick="recommend(this)" href="javascript:;" data-id="" title="未添加">
                                 <i class="layui-icon">&#xe601;</i>
                             </a>
-                            <a title="编辑"  onclick="xadmin.add_tab('编辑','{{ url('admin/article/') }}')">
+                            <a title="编辑"  onclick="xadmin.add_tab('编辑','{{ url('admin/goods/create') }}')">
                                 <i class="layui-icon">&#xe642;</i>
                             </a>
+                            <button class="layui-btn layui-btn layui-btn-xs" onclick="xadmin.open('添加规格','{{url("admin/goods/attrIndex/{$item->id}")}}')"><i class="layui-icon"></i>添加规格</button>
 
                             <a title="删除" onclick="member_del(this)" href="javascript:;">
                                 <i class="layui-icon">&#xe640;</i>
@@ -119,6 +124,10 @@
 	</div>
 </div>
 
-
 </body>
+    <script>
+        layui.define(['form'],function () {
+
+        })
+    </script>
 </html>

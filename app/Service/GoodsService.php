@@ -50,4 +50,46 @@ class GoodsService
 		$data['audit_name'] = $userModel->getColumnsValue([['id','=',$data['audit_uid']]],'real_name');
 		$data['status_dis'] = GoodsModel::$status_type[$data['status']];
 	}
+
+	/**
+     * 添加产品规格
+     */
+	public function addGoodsAttr($data){
+//	    todo 验证暂时没有
+
+
+        $model = new GoodsAttrModel();
+        $data['add_uid'] = session("user_info.id");
+        $res = $model->insertData($data);
+        return $res;
+    }
+
+    /**
+     * 产品规格详情
+     */
+    public function getGoodsAttr($goodsId){
+        $model = new GoodsAttrModel();
+        $userModel = new UserModel();
+        $goodsAttrList = $model->getListSelect([['goods_id','=',$goodsId]])->toArray();
+        $arr = [];
+        $index=0;
+        $count = count($goodsAttrList);
+        while ($index !=$count){
+            $col=[];
+            for ($i=0;$i<3 && $i<$count;$i++){
+                $goodsAttrList[$i]['add_name'] = $userModel->getColumnsValue([['id','=',$goodsAttrList[$i]['add_uid']]],'real_name');
+                $col[$i] = $goodsAttrList[$i];
+                unset($goodsAttrList[$i]);
+                $index+=1;
+            }
+
+            $goodsAttrList = array_values($goodsAttrList);
+            dump($goodsAttrList);
+            dump($index);
+            dump($count);
+            dd($col);
+            array_push($arr,$col);
+        }
+        return $arr;
+    }
 }

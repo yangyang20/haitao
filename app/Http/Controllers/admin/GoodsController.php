@@ -3,12 +3,20 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Model\common\GoodsAttrModel;
 use App\Model\common\GoodsModel;
 use App\Service\GoodsService;
 use Illuminate\Http\Request;
 
 class GoodsController extends Controller
 {
+    public $model;
+
+    public function __construct()
+    {
+        $this->model = new GoodsService();
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -52,7 +60,7 @@ class GoodsController extends Controller
 	    if ($res){
 	    	return $this->success();
 	    }else{
-	    	return $this->error();
+	    	return $this->error($model->error);
 	    }
     }
 
@@ -99,5 +107,45 @@ class GoodsController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function goodsAttrIndex($goodsId){
+        $data['goods_id'] = $goodsId;
+        $goodsAttrList = $this->model->getGoodsAttr($goodsId);
+        $data['attrList'] = $goodsAttrList;
+        return view("admin.goods.attrIndex",$data);
+    }
+
+    public function addGoodsAttrIndex($goodsId){
+        $data['goods_id'] = $goodsId;
+        return view("admin.goods.addAttrIndex",$data);
+    }
+
+    public function addGoodsAttr(Request $request){
+        $input = $request->all();
+        $res = $this->model->addGoodsAttr($input);
+        if ($res){
+            return $this->success();
+        }else{
+            return $this->error($this->model->error);
+        }
+    }
+
+    public function editGoodsAttr($attr_id){
+        $model = new GoodsAttrModel();
+        $attrInfo = $model->getInfo($attr_id);
+        $data['attrInfo'] = $attrInfo;
+        return view("admin.goods.editAttr",$data);
+    }
+
+    public function updateGoodsAttr(Request $request){
+        $model = new GoodsAttrModel();
+        $data = $request->all();
+        $res = $model->updateData($data['id'],$data);
+        if ($res){
+            return $this->success();
+        }else{
+            return $this->error();
+        }
     }
 }

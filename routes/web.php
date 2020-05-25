@@ -35,4 +35,9 @@ Route::group(['prefix'=>'admin','namespace'=>'admin','middleware'=>'checkLogin']
     Route::get("importOrderIndex","importTplController@importOrderIndex");
     Route::post("importOrderPreview","importTplController@importOrderPreview");
     Route::resource("goods","GoodsController");
+    Route::get("goods/attrIndex/{goodsId}","GoodsController@goodsAttrIndex");
+    Route::get('goods/attr/create/{goodsId}','GoodsController@addGoodsAttrIndex');
+    Route::post('goods/attr/store','GoodsController@addGoodsAttr');
+    Route::get("goods/attr/edit/{attr_id}","GoodsController@editGoodsAttr");
+    Route::put("goods/attr/update","GoodsController@updateGoodsAttr");
 });
