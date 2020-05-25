@@ -11,7 +11,7 @@
  Target Server Version : 80012
  File Encoding         : 65001
 
- Date: 24/05/2020 22:49:19
+ Date: 25/05/2020 18:04:45
 */
 
 SET NAMES utf8mb4;
@@ -33,7 +33,7 @@ CREATE TABLE `shop_admin_user`  (
   `last_login_date` datetime(0) NOT NULL ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '最后登录时间',
   `deleted_at` datetime(0) NULL DEFAULT NULL COMMENT '删除时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of shop_admin_user
@@ -49,7 +49,7 @@ CREATE TABLE `shop_brand`  (
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT '名称',
   `deleted_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of shop_brand
@@ -63,7 +63,7 @@ DROP TABLE IF EXISTS `shop_goods`;
 CREATE TABLE `shop_goods`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '产品表',
   `goods_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT '产品名称',
-  `goods_rule_name` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL COMMENT '产品别名',
+  `goods_alias_name` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL COMMENT '产品别名',
   `brand_id` int(11) NOT NULL COMMENT '品牌方id',
   `add_uid` int(5) NOT NULL COMMENT '添加人',
   `update_uid` int(5) NULL DEFAULT NULL COMMENT '修改人',
@@ -74,7 +74,7 @@ CREATE TABLE `shop_goods`  (
   `status` tinyint(3) NOT NULL DEFAULT 0 COMMENT '审核状态0待审核 1审核通过',
   `audit_uid` int(11) NULL DEFAULT NULL COMMENT '审核人id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of shop_goods
@@ -86,13 +86,23 @@ INSERT INTO `shop_goods` VALUES (1, 'Quinton天然海洋水润眼喷雾', 'N;', 
 -- ----------------------------
 DROP TABLE IF EXISTS `shop_goods_attr`;
 CREATE TABLE `shop_goods_attr`  (
-  `id` int(11) NOT NULL COMMENT '产品规格表',
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '产品规格表',
   `goods_id` int(11) NOT NULL COMMENT '产品id',
-  `attr_name` int(11) NOT NULL DEFAULT 0 COMMENT '规格id',
-  `alias_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT '别名名称',
+  `attr_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '0' COMMENT '规格名称',
+  `alias_name` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT '别名名称',
   `attr_count` int(5) NOT NULL DEFAULT 0 COMMENT '规格数量',
+  `add_uid` int(11) NOT NULL COMMENT '添加人',
+  `add_date` datetime(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '添加时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of shop_goods_attr
+-- ----------------------------
+INSERT INTO `shop_goods_attr` VALUES (1, 1, '测试', '1133', 1, 1, '2020-05-25 17:18:56');
+INSERT INTO `shop_goods_attr` VALUES (2, 1, '1111', '22', 11, 1, '2020-05-25 17:18:23');
+INSERT INTO `shop_goods_attr` VALUES (3, 1, '第三个', '33', 2, 1, '2020-05-25 17:18:25');
+INSERT INTO `shop_goods_attr` VALUES (4, 1, '第四个', '！！！！！！！！！！！！！！！！！！！', 4, 1, NULL);
 
 -- ----------------------------
 -- Table structure for shop_import_log
@@ -108,7 +118,11 @@ CREATE TABLE `shop_import_log`  (
   `add_uid` int(11) NOT NULL COMMENT '添加人id',
   `add_username` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT '添加人名称',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of shop_import_log
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for shop_import_tpl
@@ -126,7 +140,7 @@ CREATE TABLE `shop_import_tpl`  (
   `update_date` datetime(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   `deleted_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of shop_import_tpl
@@ -143,7 +157,7 @@ CREATE TABLE `shop_import_tpl_field`  (
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT '内部字段',
   `order_columns` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT '字段名称',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of shop_import_tpl_field
@@ -183,7 +197,11 @@ CREATE TABLE `shop_import_tpl_lly_971`  (
   `skugg` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'SKU规格',
   `skusl` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'SKU数量',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of shop_import_tpl_lly_971
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for shop_order
@@ -212,6 +230,10 @@ CREATE TABLE `shop_order`  (
   `add_time` int(11) NOT NULL COMMENT '添加时间',
   `add_date` datetime(0) NOT NULL ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '添加时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of shop_order
+-- ----------------------------
 
 SET FOREIGN_KEY_CHECKS = 1;
