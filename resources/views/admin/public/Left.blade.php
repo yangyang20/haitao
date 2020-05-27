@@ -167,12 +167,12 @@
                     <i class="iconfont nav_right">&#xe697;</i></a>
                 <ul class="sub-menu">
                     <li>
-                        <a onclick="xadmin.add_tab('品牌方列表','{{url('admin/category')}}')">
+                        <a onclick="xadmin.add_tab('品牌方列表','{{url('admin/brand')}}')">
                             <i class="iconfont">&#xe6a7;</i>
                             <cite>品牌方列表</cite></a>
                     </li>
                     <li>
-                        <a onclick="xadmin.add_tab('添加品牌方','{{url('admin/category/create')}}')">
+                        <a onclick="xadmin.add_tab('添加品牌方','{{url('admin/brand/create')}}')">
                             <i class="iconfont">&#xe6a7;</i>
                             <cite>添加品牌方</cite></a>
                     </li>

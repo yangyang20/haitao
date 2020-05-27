@@ -31,11 +31,18 @@ class GoodsService
 	public function createGoods($data){
 //		todo 验证暂时没有
 
-		$data['add_uid'] = session('user_info.id');
-		$data['goods_rule_name'] = serialize($data['goods_rule_name']);
+
 		$res = $this->model->insertData($data);
 		return $res;
 	}
+
+    /**
+     * 修改产品
+     */
+    public function updateGoods($id,$data){
+        $res = $this->model->updateData($id,$data);
+        return $res;
+    }
 
 	/**
 	 * 格式化数据
@@ -72,23 +79,14 @@ class GoodsService
         $userModel = new UserModel();
         $goodsAttrList = $model->getListSelect([['goods_id','=',$goodsId]])->toArray();
         $arr = [];
-        $index=0;
-        $count = count($goodsAttrList);
-        while ($index !=$count){
-            $col=[];
-            for ($i=0;$i<3 && $i<$count;$i++){
-                $goodsAttrList[$i]['add_name'] = $userModel->getColumnsValue([['id','=',$goodsAttrList[$i]['add_uid']]],'real_name');
-                $col[$i] = $goodsAttrList[$i];
-                unset($goodsAttrList[$i]);
-                $index+=1;
+        $col=[];
+        foreach ($goodsAttrList as $index=>$item){
+            $item['add_name'] = $userModel->getColumnsValue([['id','=',$item['add_uid']]],'real_name');
+            array_push($col,$item);
+            if (count($col) == 3 || $index==count($goodsAttrList)-1){
+                array_push($arr,$col);
+                $col=[];
             }
-
-            $goodsAttrList = array_values($goodsAttrList);
-            dump($goodsAttrList);
-            dump($index);
-            dump($count);
-            dd($col);
-            array_push($arr,$col);
         }
         return $arr;
     }

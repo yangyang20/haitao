@@ -50,10 +50,10 @@
 					</form>
 				</div>
 				<div class="layui-card-header">
-					<button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
-					<button class="layui-btn" onclick="xadmin.open('添加商品','{{url('admin/goods/create')}}',600,400)"><i
-								class="layui-icon"></i>添加
-					</button>
+{{--					<button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>--}}
+{{--					<button class="layui-btn" onclick="xadmin.open('添加商品','{{url('admin/goods/create')}}',600,400)"><i--}}
+{{--								class="layui-icon"></i>添加--}}
+{{--					</button>--}}
 				</div>
 
 				<div class="layui-card-body layui-table-body layui-table-main">
@@ -96,17 +96,17 @@
                         <td>{{$item->audit_name}}</td>
                         <td>{{$item->status_dis}}</td>
                         <td class="td-manage">
-                            <a onclick="recommend(this)" href="javascript:;" data-id="" title="未添加">
-                                <i class="layui-icon">&#xe601;</i>
-                            </a>
-                            <a title="编辑"  onclick="xadmin.add_tab('编辑','{{ url('admin/goods/create') }}')">
+{{--                            <a onclick="recommend(this)" href="javascript:;" data-id="" title="未添加">--}}
+{{--                                <i class="layui-icon">&#xe601;</i>--}}
+{{--                            </a>--}}
+                            <a title="编辑"  onclick="xadmin.open('编辑','{{ url("admin/goods/{$item->id}/edit") }}')">
                                 <i class="layui-icon">&#xe642;</i>
                             </a>
-                            <button class="layui-btn layui-btn layui-btn-xs" onclick="xadmin.open('添加规格','{{url("admin/goods/attrIndex/{$item->id}")}}')"><i class="layui-icon"></i>添加规格</button>
-
-                            <a title="删除" onclick="member_del(this)" href="javascript:;">
+                            <a title="删除" onclick="member_del({{$item->id}})" href="javascript:;">
                                 <i class="layui-icon">&#xe640;</i>
                             </a>
+                            <button class="layui-btn layui-btn layui-btn-xs" onclick="xadmin.open('规格设置','{{url("admin/goods/attrIndex/{$item->id}")}}')"><i class="layui-icon"></i>添加规格</button>
+
                         </td>
                     </tr>
                 @endforeach
@@ -129,5 +129,25 @@
         layui.define(['form'],function () {
 
         })
+
+        function member_del(id) {
+            layer.confirm("确定要删除此商品吗?",function (index) {
+                console.log(index);
+                $.ajax({
+                    url:`{{url('admin/goods/${id}')}}`,
+                    type:'delete',
+                    dataType:'json',
+                    success:function (res) {
+                        layer.close(index)
+                        if (res.status == success){
+                            layer.msg(res.msg);
+                            location.reload()
+                        }else{
+                            layer.open(res.msg)
+                        }
+                    }
+                })
+            })
+        }
     </script>
 </html>

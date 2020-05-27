@@ -34,7 +34,7 @@
         <div class="layui-col-md4">
             <a onclick="xadmin.open('修改规格','{{url("admin/goods/attr/edit/{$attr['id']}")}}',500,400)">
                 <div class="layui-card item-card">
-                    <div class="layui-card-header">{{$attr['attr_name']}}</div>
+                    <div class="layui-card-header">规格名称:{{$attr['attr_name']}}</div>
                     <div class="layui-card-body">
                         添加人:{{$attr['add_name']}}<br>
                         添加时间: {{$attr['add_date']}}<br>

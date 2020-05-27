@@ -9,8 +9,10 @@ use Illuminate\Routing\Controller as BaseController;
 
 class Controller extends BaseController
 {
+
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+    public $modle;
 
     public function success($msg='操作成功',$data=[],$status=1){
         return [

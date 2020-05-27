@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Model\admin\BrandModel;
 use App\Model\common\GoodsAttrModel;
 use App\Model\common\GoodsModel;
 use App\Service\GoodsService;
@@ -56,6 +57,7 @@ class GoodsController extends Controller
         //
 	    $input = $request->all();
 	    $model = new GoodsService();
+        $input['add_uid'] = session('user_info.id');
 	    $res = $model->createGoods($input);
 	    if ($res){
 	    	return $this->success();
@@ -72,7 +74,7 @@ class GoodsController extends Controller
      */
     public function show($id)
     {
-        //
+
     }
 
     /**
@@ -83,7 +85,12 @@ class GoodsController extends Controller
      */
     public function edit($id)
     {
-        //
+        $model = new GoodsModel();
+        $goodsInfo = $model->getInfo($id);
+        $brandModel = new BrandModel();
+        $data['brand_list'] = $brandModel->getColumns([],['id','name']);
+        $data['goodsInfo'] = $goodsInfo;
+        return view("admin.goods.editGoods",$data);
     }
 
     /**
@@ -95,7 +102,15 @@ class GoodsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $input = $request->all();
+        $model = new GoodsService();
+        $input['update_uid'] = session('user_info.id');
+        $res = $model->updateGoods($id,$input);
+        if ($res){
+            return $this->success();
+        }else{
+            return $this->error($model->error);
+        }
     }
 
     /**
@@ -106,7 +121,13 @@ class GoodsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $model = new GoodsModel();
+        $res = $model->deleteData($id);
+        if ($res){
+            return $this->success();
+        }else{
+            return $this->error();
+        }
     }
 
     public function goodsAttrIndex($goodsId){

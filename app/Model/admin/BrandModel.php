@@ -4,6 +4,7 @@ namespace App\Model\admin;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class BrandModel extends Model
 {
@@ -53,6 +54,11 @@ class BrandModel extends Model
 		$res = $this->where($map)->value($value);
 		return $res;
 	}
+
+	public function getColumns($map=[],$col=['*']){
+	    $res = $this->where($map)->select($col)->get();
+	    return $res;
+    }
 
 	public function insertData($data)
 	{
