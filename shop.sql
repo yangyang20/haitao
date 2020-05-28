@@ -11,7 +11,7 @@
  Target Server Version : 80012
  File Encoding         : 65001
 
- Date: 25/05/2020 18:04:45
+ Date: 28/05/2020 18:00:06
 */
 
 SET NAMES utf8mb4;
@@ -46,15 +46,51 @@ INSERT INTO `shop_admin_user` VALUES (1, 'admin', 'eyJpdiI6ImJsdnpRc2JRbVBNMk1Kd
 DROP TABLE IF EXISTS `shop_brand`;
 CREATE TABLE `shop_brand`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '品牌方表',
-  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT '名称',
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT '名称',
+  `com_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT '公司名称',
+  `contact_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT '联系人',
+  `mobile` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT '联系电话',
+  `email` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT '联系邮箱',
   `deleted_at` datetime(0) NULL DEFAULT NULL,
+  `add_uid` int(11) NOT NULL COMMENT '添加人id',
+  `add_real_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT '添加人姓名',
+  `update_uid` int(11) NULL DEFAULT NULL COMMENT '更新人id',
+  `update_date` datetime(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `add_date` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '添加时间',
+  `status` tinyint(2) NOT NULL DEFAULT 1 COMMENT '0已暂停 1合作中',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of shop_brand
 -- ----------------------------
-INSERT INTO `shop_brand` VALUES (1, '品牌测试', NULL);
+INSERT INTO `shop_brand` VALUES (2, '合作方', '公司名称', '联系人', '18627143152', '393622951@qq.com', NULL, 1, '罗阳', NULL, NULL, '2020-05-27 16:56:14', 0);
+
+-- ----------------------------
+-- Table structure for shop_dealer
+-- ----------------------------
+DROP TABLE IF EXISTS `shop_dealer`;
+CREATE TABLE `shop_dealer`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '经销商表',
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT '名称',
+  `com_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT '公司名称',
+  `contact_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT '联系人',
+  `mobile` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT '联系电话',
+  `email` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT '联系邮箱',
+  `deleted_at` datetime(0) NULL DEFAULT NULL,
+  `add_uid` int(11) NOT NULL COMMENT '添加人id',
+  `add_real_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT '添加人姓名',
+  `update_uid` int(11) NULL DEFAULT NULL COMMENT '更新人id',
+  `update_date` datetime(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `add_date` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '添加时间',
+  `status` tinyint(2) NOT NULL DEFAULT 1 COMMENT '0已暂停 1合作中',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of shop_dealer
+-- ----------------------------
+INSERT INTO `shop_dealer` VALUES (3, '测试经销商', '大大大', '罗阳', '18627143152', '393622951@qq.com', NULL, 1, '罗阳', NULL, NULL, '2020-05-28 15:37:51', 0);
 
 -- ----------------------------
 -- Table structure for shop_goods
@@ -74,12 +110,12 @@ CREATE TABLE `shop_goods`  (
   `status` tinyint(3) NOT NULL DEFAULT 0 COMMENT '审核状态0待审核 1审核通过',
   `audit_uid` int(11) NULL DEFAULT NULL COMMENT '审核人id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of shop_goods
 -- ----------------------------
-INSERT INTO `shop_goods` VALUES (1, 'Quinton天然海洋水润眼喷雾', 'N;', 1, 1, NULL, '2020-05-24 19:41:28', '2020-05-24 19:41:28', 0, NULL, 0, NULL);
+INSERT INTO `shop_goods` VALUES (1, 'Quinton天然海洋水润眼喷雾', '111111111111111111111111111111111111111111', 1, 1, 1, '2020-05-27 15:14:17', '2020-05-27 15:14:17', 0, '2020-05-27 15:14:17', 0, NULL);
 
 -- ----------------------------
 -- Table structure for shop_goods_attr
@@ -94,13 +130,13 @@ CREATE TABLE `shop_goods_attr`  (
   `add_uid` int(11) NOT NULL COMMENT '添加人',
   `add_date` datetime(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '添加时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of shop_goods_attr
 -- ----------------------------
 INSERT INTO `shop_goods_attr` VALUES (1, 1, '测试', '1133', 1, 1, '2020-05-25 17:18:56');
-INSERT INTO `shop_goods_attr` VALUES (2, 1, '1111', '22', 11, 1, '2020-05-25 17:18:23');
+INSERT INTO `shop_goods_attr` VALUES (2, 1, '11', '66666', 11, 1, '2020-05-27 10:46:43');
 INSERT INTO `shop_goods_attr` VALUES (3, 1, '第三个', '33', 2, 1, '2020-05-25 17:18:25');
 INSERT INTO `shop_goods_attr` VALUES (4, 1, '第四个', '！！！！！！！！！！！！！！！！！！！', 4, 1, NULL);
 
@@ -118,7 +154,7 @@ CREATE TABLE `shop_import_log`  (
   `add_uid` int(11) NOT NULL COMMENT '添加人id',
   `add_username` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT '添加人名称',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of shop_import_log
@@ -139,14 +175,16 @@ CREATE TABLE `shop_import_tpl`  (
   `table_config` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT '表结构',
   `update_date` datetime(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   `deleted_at` datetime(0) NULL DEFAULT NULL,
+  `add_real_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT '添加人姓名',
+  `status` tinyint(2) NOT NULL DEFAULT 1 COMMENT '状态 1正常 0暂停',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of shop_import_tpl
 -- ----------------------------
-INSERT INTO `shop_import_tpl` VALUES (1, '阿宝', 123, 1, 'import_tpl_ab_526', '2020-05-14 18:00:31', 1, 'a:5:{i:0;a:7:{s:5:\"title\";s:14:\"文件模板id\";s:3:\"col\";s:0:\"\";s:4:\"type\";s:3:\"int\";s:6:\"length\";i:5;s:6:\"filter\";s:13:\"import_tpl_id\";s:6:\"tag_id\";s:0:\"\";s:7:\"is_null\";s:8:\"NOT NULL\";}i:1;a:7:{s:5:\"title\";s:17:\"导入的文件id\";s:3:\"col\";s:0:\"\";s:4:\"type\";s:3:\"int\";s:6:\"length\";i:11;s:6:\"filter\";s:7:\"file_id\";s:6:\"tag_id\";s:0:\"\";s:7:\"is_null\";s:8:\"NOT NULL\";}i:2;a:7:{s:5:\"title\";s:12:\"订单编号\";s:3:\"col\";s:1:\"A\";s:4:\"type\";s:7:\"varchar\";s:6:\"length\";i:255;s:6:\"filter\";s:4:\"ddbh\";s:6:\"tag_id\";s:1:\"4\";s:7:\"is_null\";s:12:\"DEFAULT NULL\";}i:3;a:7:{s:5:\"title\";s:15:\"外部订单号\";s:3:\"col\";s:1:\"B\";s:4:\"type\";s:7:\"varchar\";s:6:\"length\";i:255;s:6:\"filter\";s:5:\"wbddh\";s:6:\"tag_id\";N;s:7:\"is_null\";s:12:\"DEFAULT NULL\";}i:4;a:7:{s:5:\"title\";s:12:\"商品名称\";s:3:\"col\";s:1:\"C\";s:4:\"type\";s:7:\"varchar\";s:6:\"length\";i:255;s:6:\"filter\";s:4:\"spmc\";s:6:\"tag_id\";N;s:7:\"is_null\";s:12:\"DEFAULT NULL\";}}', NULL, NULL);
-INSERT INTO `shop_import_tpl` VALUES (6, '罗拉贸易', 123, 1, 'import_tpl_lly_971', '2020-05-23 22:49:10', 1, 'a:12:{i:0;a:6:{s:5:\"title\";s:14:\"文件模板id\";s:4:\"type\";s:3:\"int\";s:6:\"length\";i:5;s:6:\"filter\";s:13:\"import_tpl_id\";s:6:\"tag_id\";s:0:\"\";s:7:\"is_null\";s:8:\"NOT NULL\";}i:1;a:6:{s:5:\"title\";s:17:\"导入的文件id\";s:4:\"type\";s:3:\"int\";s:6:\"length\";i:11;s:6:\"filter\";s:7:\"file_id\";s:6:\"tag_id\";s:0:\"\";s:7:\"is_null\";s:8:\"NOT NULL\";}i:2;a:6:{s:5:\"title\";s:15:\"商城订单号\";s:4:\"type\";s:7:\"varchar\";s:6:\"length\";s:3:\"255\";s:6:\"filter\";s:5:\"scddh\";s:6:\"tag_id\";s:1:\"4\";s:7:\"is_null\";s:12:\"DEFAULT NULL\";}i:3;a:6:{s:5:\"title\";s:12:\"订单时间\";s:4:\"type\";s:7:\"varchar\";s:6:\"length\";s:3:\"255\";s:6:\"filter\";s:4:\"ddsj\";s:6:\"tag_id\";s:1:\"5\";s:7:\"is_null\";s:12:\"DEFAULT NULL\";}i:4;a:6:{s:5:\"title\";s:15:\"收件人姓名\";s:4:\"type\";s:7:\"varchar\";s:6:\"length\";s:3:\"255\";s:6:\"filter\";s:5:\"sjrxm\";s:6:\"tag_id\";s:1:\"6\";s:7:\"is_null\";s:12:\"DEFAULT NULL\";}i:5;a:6:{s:5:\"title\";s:21:\"收件人手机号码\";s:4:\"type\";s:7:\"varchar\";s:6:\"length\";s:3:\"255\";s:6:\"filter\";s:7:\"sjrsjhm\";s:6:\"tag_id\";s:1:\"7\";s:7:\"is_null\";s:12:\"DEFAULT NULL\";}i:6;a:6:{s:5:\"title\";s:3:\"省\";s:4:\"type\";s:7:\"varchar\";s:6:\"length\";s:3:\"255\";s:6:\"filter\";s:1:\"s\";s:6:\"tag_id\";s:1:\"8\";s:7:\"is_null\";s:12:\"DEFAULT NULL\";}i:7;a:6:{s:5:\"title\";s:6:\"地市\";s:4:\"type\";s:7:\"varchar\";s:6:\"length\";s:3:\"255\";s:6:\"filter\";s:2:\"ds\";s:6:\"tag_id\";s:2:\"10\";s:7:\"is_null\";s:12:\"DEFAULT NULL\";}i:8;a:6:{s:5:\"title\";s:21:\"收件人具体地址\";s:4:\"type\";s:7:\"varchar\";s:6:\"length\";s:3:\"255\";s:6:\"filter\";s:7:\"sjrjtdz\";s:6:\"tag_id\";s:2:\"11\";s:7:\"is_null\";s:12:\"DEFAULT NULL\";}i:9;a:6:{s:5:\"title\";s:12:\"商品名称\";s:4:\"type\";s:7:\"varchar\";s:6:\"length\";s:3:\"255\";s:6:\"filter\";s:4:\"spmc\";s:6:\"tag_id\";s:1:\"1\";s:7:\"is_null\";s:12:\"DEFAULT NULL\";}i:10;a:6:{s:5:\"title\";s:9:\"SKU规格\";s:4:\"type\";s:7:\"varchar\";s:6:\"length\";s:3:\"255\";s:6:\"filter\";s:5:\"skugg\";s:6:\"tag_id\";s:1:\"2\";s:7:\"is_null\";s:12:\"DEFAULT NULL\";}i:11;a:6:{s:5:\"title\";s:9:\"SKU数量\";s:4:\"type\";s:7:\"varchar\";s:6:\"length\";s:3:\"255\";s:6:\"filter\";s:5:\"skusl\";s:6:\"tag_id\";s:1:\"3\";s:7:\"is_null\";s:12:\"DEFAULT NULL\";}}', NULL, NULL);
+INSERT INTO `shop_import_tpl` VALUES (1, '阿宝', 123, 1, 'import_tpl_ab_526', '2020-05-14 18:00:31', 1, 'a:5:{i:0;a:7:{s:5:\"title\";s:14:\"文件模板id\";s:3:\"col\";s:0:\"\";s:4:\"type\";s:3:\"int\";s:6:\"length\";i:5;s:6:\"filter\";s:13:\"import_tpl_id\";s:6:\"tag_id\";s:0:\"\";s:7:\"is_null\";s:8:\"NOT NULL\";}i:1;a:7:{s:5:\"title\";s:17:\"导入的文件id\";s:3:\"col\";s:0:\"\";s:4:\"type\";s:3:\"int\";s:6:\"length\";i:11;s:6:\"filter\";s:7:\"file_id\";s:6:\"tag_id\";s:0:\"\";s:7:\"is_null\";s:8:\"NOT NULL\";}i:2;a:7:{s:5:\"title\";s:12:\"订单编号\";s:3:\"col\";s:1:\"A\";s:4:\"type\";s:7:\"varchar\";s:6:\"length\";i:255;s:6:\"filter\";s:4:\"ddbh\";s:6:\"tag_id\";s:1:\"4\";s:7:\"is_null\";s:12:\"DEFAULT NULL\";}i:3;a:7:{s:5:\"title\";s:15:\"外部订单号\";s:3:\"col\";s:1:\"B\";s:4:\"type\";s:7:\"varchar\";s:6:\"length\";i:255;s:6:\"filter\";s:5:\"wbddh\";s:6:\"tag_id\";N;s:7:\"is_null\";s:12:\"DEFAULT NULL\";}i:4;a:7:{s:5:\"title\";s:12:\"商品名称\";s:3:\"col\";s:1:\"C\";s:4:\"type\";s:7:\"varchar\";s:6:\"length\";i:255;s:6:\"filter\";s:4:\"spmc\";s:6:\"tag_id\";N;s:7:\"is_null\";s:12:\"DEFAULT NULL\";}}', NULL, NULL, '', 1);
+INSERT INTO `shop_import_tpl` VALUES (6, '罗拉贸易', 123, 1, 'import_tpl_lly_971', '2020-05-23 22:49:10', 1, 'a:12:{i:0;a:6:{s:5:\"title\";s:14:\"文件模板id\";s:4:\"type\";s:3:\"int\";s:6:\"length\";i:5;s:6:\"filter\";s:13:\"import_tpl_id\";s:6:\"tag_id\";s:0:\"\";s:7:\"is_null\";s:8:\"NOT NULL\";}i:1;a:6:{s:5:\"title\";s:17:\"导入的文件id\";s:4:\"type\";s:3:\"int\";s:6:\"length\";i:11;s:6:\"filter\";s:7:\"file_id\";s:6:\"tag_id\";s:0:\"\";s:7:\"is_null\";s:8:\"NOT NULL\";}i:2;a:6:{s:5:\"title\";s:15:\"商城订单号\";s:4:\"type\";s:7:\"varchar\";s:6:\"length\";s:3:\"255\";s:6:\"filter\";s:5:\"scddh\";s:6:\"tag_id\";s:1:\"4\";s:7:\"is_null\";s:12:\"DEFAULT NULL\";}i:3;a:6:{s:5:\"title\";s:12:\"订单时间\";s:4:\"type\";s:7:\"varchar\";s:6:\"length\";s:3:\"255\";s:6:\"filter\";s:4:\"ddsj\";s:6:\"tag_id\";s:1:\"5\";s:7:\"is_null\";s:12:\"DEFAULT NULL\";}i:4;a:6:{s:5:\"title\";s:15:\"收件人姓名\";s:4:\"type\";s:7:\"varchar\";s:6:\"length\";s:3:\"255\";s:6:\"filter\";s:5:\"sjrxm\";s:6:\"tag_id\";s:1:\"6\";s:7:\"is_null\";s:12:\"DEFAULT NULL\";}i:5;a:6:{s:5:\"title\";s:21:\"收件人手机号码\";s:4:\"type\";s:7:\"varchar\";s:6:\"length\";s:3:\"255\";s:6:\"filter\";s:7:\"sjrsjhm\";s:6:\"tag_id\";s:1:\"7\";s:7:\"is_null\";s:12:\"DEFAULT NULL\";}i:6;a:6:{s:5:\"title\";s:3:\"省\";s:4:\"type\";s:7:\"varchar\";s:6:\"length\";s:3:\"255\";s:6:\"filter\";s:1:\"s\";s:6:\"tag_id\";s:1:\"8\";s:7:\"is_null\";s:12:\"DEFAULT NULL\";}i:7;a:6:{s:5:\"title\";s:6:\"地市\";s:4:\"type\";s:7:\"varchar\";s:6:\"length\";s:3:\"255\";s:6:\"filter\";s:2:\"ds\";s:6:\"tag_id\";s:2:\"10\";s:7:\"is_null\";s:12:\"DEFAULT NULL\";}i:8;a:6:{s:5:\"title\";s:21:\"收件人具体地址\";s:4:\"type\";s:7:\"varchar\";s:6:\"length\";s:3:\"255\";s:6:\"filter\";s:7:\"sjrjtdz\";s:6:\"tag_id\";s:2:\"11\";s:7:\"is_null\";s:12:\"DEFAULT NULL\";}i:9;a:6:{s:5:\"title\";s:12:\"商品名称\";s:4:\"type\";s:7:\"varchar\";s:6:\"length\";s:3:\"255\";s:6:\"filter\";s:4:\"spmc\";s:6:\"tag_id\";s:1:\"1\";s:7:\"is_null\";s:12:\"DEFAULT NULL\";}i:10;a:6:{s:5:\"title\";s:9:\"SKU规格\";s:4:\"type\";s:7:\"varchar\";s:6:\"length\";s:3:\"255\";s:6:\"filter\";s:5:\"skugg\";s:6:\"tag_id\";s:1:\"2\";s:7:\"is_null\";s:12:\"DEFAULT NULL\";}i:11;a:6:{s:5:\"title\";s:9:\"SKU数量\";s:4:\"type\";s:7:\"varchar\";s:6:\"length\";s:3:\"255\";s:6:\"filter\";s:5:\"skusl\";s:6:\"tag_id\";s:1:\"3\";s:7:\"is_null\";s:12:\"DEFAULT NULL\";}}', NULL, NULL, '', 1);
 
 -- ----------------------------
 -- Table structure for shop_import_tpl_field
@@ -157,7 +195,7 @@ CREATE TABLE `shop_import_tpl_field`  (
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT '内部字段',
   `order_columns` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT '字段名称',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of shop_import_tpl_field
@@ -230,7 +268,7 @@ CREATE TABLE `shop_order`  (
   `add_time` int(11) NOT NULL COMMENT '添加时间',
   `add_date` datetime(0) NOT NULL ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '添加时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of shop_order

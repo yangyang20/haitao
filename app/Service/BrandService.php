@@ -12,9 +12,9 @@ namespace App\Service;
 
 use App\Model\admin\BrandModel;
 
-class BrandService
+class BrandService extends CommonService
 {
-    public $modle;
+
 
     public function __construct()
     {

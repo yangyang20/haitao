@@ -64,17 +64,18 @@
                             {{--<div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>--}}
                             {{--</th>--}}
                             <th>ID</th>
-                            <th>经销商名称</th>
-                            <th>公司名称</th>
-                            <th>联系人</th>
+                            <th>模板名称</th>
+                            <th>经销商</th>
+                            <th>表格名称</th>
                             <th>添加人</th>
                             <th>添加时间</th>
-                            <th>合作状态</th>
+                            <th>更新时间</th>
+                            <th>状态</th>
                             <th>操作</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($dealerList as $item)
+                        @foreach($goodsList as $item)
                             <tr>
                                 {{--<td>--}}
                                 {{--<div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='{{ $v->user_id }}'><i class="layui-icon">&#xe605;</i></div>--}}
@@ -84,10 +85,11 @@
                                 {{--</td>--}}
                                 <td>{{ $item->id }}</td>
                                 <td>{{ $item->name }}</td>
-                                <td>{{$item->com_name}}</td>
-                                <td>{{ $item->contact_name }}</td>
+                                <td>{{$item->dealer_name}}</td>
+                                <td>{{ $item->table_name }}</td>
                                 <td>{{$item->add_real_name}}</td>
                                 <td>{{$item->add_date}}</td>
+                                <td>{{$item->update_date}}</td>
                                 <td class="td-status">
                                     <input type="checkbox" data-id="{{$item->id}}" value="{{$item->status}}" {{$item->status?'checked':''}} lay-filter="status" lay-skin="switch" lay-text="合作中|已暂停">
                                 </td>
@@ -98,6 +100,8 @@
                                     <a title="删除" onclick="member_del({{$item->id}})" href="javascript:;">
                                         <i class="layui-icon">&#xe640;</i>
                                     </a>
+                                    <button class="layui-btn layui-btn layui-btn-xs" onclick="xadmin.open('规格设置','{{url("admin/goods/attrIndex/{$item->id}")}}')"><i class="layui-icon"></i>添加规格</button>
+
                                 </td>
                             </tr>
                         @endforeach
@@ -106,7 +110,7 @@
                 </div>
                 <div class="layui-card-body ">
                     <div class="page">
-                        {!! $dealerList->render() !!}
+                        {!! $goodsList->render() !!}
                     </div>
                 </div>
 
@@ -118,36 +122,14 @@
 </body>
 <script>
     layui.define(['form'],function () {
-        var form = layui.form
 
-        //监听开关
-        form.on('switch(status)', function(data){
-            let element =  data.elem
-            let id = element.getAttribute("data-id")
-            let value=1
-            if(!data.elem.checked){
-                value=0
-            }
-            $.ajax({
-                url:`{{url('admin/articles/${id}')}}`,
-                type:'get',
-                data:{status:value},
-                dataType: 'json',
-                success:function (res) {
-                    if (res.status == 1){
-                        layer.msg('操作成功')
-                    }else {
-                        layer.msg('操作失败')
-                    }
-                }
-            })
-        });
     })
 
     function member_del(id) {
         layer.confirm("确定要删除此商品吗?",function (index) {
+            console.log(index);
             $.ajax({
-                url:`{{url('admin/brand/${id}')}}`,
+                url:`{{url('admin/goods/${id}')}}`,
                 type:'delete',
                 dataType:'json',
                 success:function (res) {
@@ -164,4 +146,3 @@
     }
 </script>
 </html>
-

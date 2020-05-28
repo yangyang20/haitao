@@ -23,11 +23,9 @@ use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
 
-class ImportService
+class ImportService extends CommonService
 {
-    public $error ="";
 
-    public $model;
 
 
 //    创建的字段类型
@@ -86,6 +84,7 @@ class ImportService
                 'start_line'=>$input['start_line'],
                 'table_name'=>$_name,
                 'add_uid'=>session('user_info.id'),
+                'add_real_name'=>session('user_info.real_name'),
                 'table_config'=>serialize($table)
             ];
 

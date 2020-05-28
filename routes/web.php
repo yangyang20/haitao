@@ -41,4 +41,5 @@ Route::group(['prefix'=>'admin','namespace'=>'admin','middleware'=>'checkLogin']
     Route::get("goods/attr/edit/{attr_id}","GoodsController@editGoodsAttr");
     Route::put("goods/attr/update","GoodsController@updateGoodsAttr");
     Route::resource("brand","BrandController");
+    Route::resource("dealer","DealerController");
 });

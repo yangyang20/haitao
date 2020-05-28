@@ -32,13 +32,13 @@
     <div class="layui-row layui-col-space15 ">
         <div class="layui-col-md12">
             <div class="layui-card">
-                <div class="layui-card-header">新增合作方</div>
+                <div class="layui-card-header">新增经销商</div>
                 <div class="layui-card-body">
                     <form class="layui-form main layui-form-pane">
                         <div class="layui-form-item">
-                            <label class="layui-form-label">合作方名称</label>
+                            <label class="layui-form-label">经销商名称</label>
                             <div class="layui-input-block">
-                                <input type="text" name="name" lay-verify="required" placeholder="请输入合作方名称" autocomplete="off"
+                                <input type="text" name="name" lay-verify="required" placeholder="请输入经销商名称" autocomplete="off"
                                        class="layui-input">
                             </div>
                         </div>
@@ -91,7 +91,7 @@
 
         form.on('submit(*)', function (data) {
             $.ajax({
-                url: "{{url('admin/brand')}}",
+                url: "{{url('admin/dealer')}}",
                 type: "post",
                 data: data.field,
                 dataType: 'json',

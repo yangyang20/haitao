@@ -12,13 +12,13 @@ namespace App\Service;
 
 use App\Model\admin\DealerModel;
 
-class DealerService
+class DealerService extends CommonService
 {
-    public $modle;
+
 
     public function __construct()
     {
-        $this->modle = new DealerModel();
+        $this->model = new DealerModel();
     }
 
     /**
@@ -28,7 +28,7 @@ class DealerService
 //		todo 验证暂时没有
 
 
-        $res = $this->modle->insertData($data);
+        $res = $this->model->insertData($data);
         return $res;
     }
 
@@ -36,7 +36,7 @@ class DealerService
      * 修改品牌方
      */
     public function updateBrand($id,$data){
-        $res = $this->modle->updateData($id,$data);
+        $res = $this->model->updateData($id,$data);
         return $res;
     }
 }

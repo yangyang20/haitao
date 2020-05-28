@@ -185,12 +185,12 @@
                     <i class="iconfont nav_right">&#xe697;</i></a>
                 <ul class="sub-menu">
                     <li>
-                        <a onclick="xadmin.add_tab('经销商列表','{{url('admin/category')}}')">
+                        <a onclick="xadmin.add_tab('经销商列表','{{url('admin/dealer')}}')">
                             <i class="iconfont">&#xe6a7;</i>
                             <cite>经销商列表</cite></a>
                     </li>
                     <li>
-                        <a onclick="xadmin.add_tab('添加经销商','{{url('admin/category/create')}}')">
+                        <a onclick="xadmin.add_tab('添加经销商','{{url('admin/dealer/create')}}')">
                             <i class="iconfont">&#xe6a7;</i>
                             <cite>添加经销商</cite></a>
                     </li>

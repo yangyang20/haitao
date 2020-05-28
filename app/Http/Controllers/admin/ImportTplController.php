@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Model\admin\DealerModel;
 use App\Model\admin\ImportTplModel;
 use App\Service\ImportService;
 use App\Tools\ExcelCommon;
@@ -10,6 +11,11 @@ use Illuminate\Http\Request;
 
 class ImportTplController extends Controller
 {
+    public function __construct()
+    {
+        $this->modle = new ImportService();
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +23,9 @@ class ImportTplController extends Controller
      */
     public function index()
     {
-        //
+        $importList = $this->modle->getColumnsValue();
+
+        return view("admin.import.index");
     }
 
     /**
@@ -31,6 +39,8 @@ class ImportTplController extends Controller
         $tplFieldArr = $model->getTplField();
         $data['tpl_field_list'] = $tplFieldArr;
         $data['field_type_arr']=ImportService::$field_type;
+        $dealerModel = new DealerModel();
+        $data['dealerList'] = $dealerModel->getColumns([],['id','name']);
         return view("admin.import.add",$data);
     }
 

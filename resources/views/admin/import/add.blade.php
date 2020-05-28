@@ -42,7 +42,10 @@
                         <th><label class="layui-form-label">经销商</label></th>
                         <td> <div class="layui-input-inline">
                                 <select name="dealer_id">
-                                    <option value="123">经销商</option>
+                                    <option value="">请选择</option>
+                                    @foreach($dealerList as $item)
+                                    <option value="{{$item->id}}">{{$item->name}}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </td>

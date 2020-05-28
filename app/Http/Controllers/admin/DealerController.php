@@ -22,9 +22,9 @@ class DealerController extends Controller
      */
     public function index()
     {
-        $model = new DealerModel();
-        $brandList = $model->getList([]);
-        $data['brandList'] = $brandList;
+
+        $dealerList = $this->modle->getList([]);
+        $data['dealerList'] = $dealerList;
         return view("admin.dealer.index",$data);
     }
 
@@ -49,7 +49,7 @@ class DealerController extends Controller
         $input = $request->all();
         $input['add_uid'] = session("user_info.id");
         $input['add_real_name'] = session("user_info.real_name");
-        $res = $this->model->createBrand($input);
+        $res = $this->modle->create($input);
         if ($res){
             return $this->success();
         }else{

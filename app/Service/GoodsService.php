@@ -15,10 +15,9 @@ use App\Model\admin\UserModel;
 use App\Model\common\GoodsAttrModel;
 use App\Model\common\GoodsModel;
 
-class GoodsService
+class GoodsService extends CommonService
 {
-	public $model;
-	public $error;
+
 
 	public function __construct()
 	{
