@@ -45,19 +45,17 @@
 						<div class="layui-form-item">
 							<label class="layui-form-label">产品别名</label>
 							<div class="layui-input-block">
-								<textarea name="goods_rule_name" placeholder="请输入产品别名" class="layui-textarea"></textarea>
+								<textarea name="alias_name" placeholder="请输入产品别名,一行一个" class="layui-textarea"></textarea>
 							</div>
 						</div>
 						<div class="layui-form-item">
 							<label class="layui-form-label">品牌方</label>
 							<div class="layui-input-block">
 								<select name="brand_id" lay-verify="required">
-									<option value=""></option>
-									<option value="0">北京</option>
-									<option value="1">上海</option>
-									<option value="2">广州</option>
-									<option value="3">深圳</option>
-									<option value="4">杭州</option>
+									<option value="">请选择</option>
+                                    @foreach($brandList as $item)
+									<option value="{{$item->id}}">{{$item->name}}</option>
+                                    @endforeach
 								</select>
 							</div>
 						</div>

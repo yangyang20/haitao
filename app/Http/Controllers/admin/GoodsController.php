@@ -7,6 +7,7 @@ use App\Model\admin\BrandModel;
 use App\Model\common\GoodsAttrModel;
 use App\Model\common\GoodsModel;
 use App\Service\GoodsService;
+use App\Tools\Common;
 use Illuminate\Http\Request;
 
 class GoodsController extends Controller
@@ -29,7 +30,7 @@ class GoodsController extends Controller
 	    $goodsList = $model->getList([]);
 	    $service = new GoodsService();
 	    foreach ($goodsList as $item){
-		    $service->formatGoodsList($item);
+		    $service->formatGoods($item);
 	    }
 	    $data['goodsList'] = $goodsList;
         return view("admin.goods.index",$data);
@@ -42,8 +43,10 @@ class GoodsController extends Controller
      */
     public function create()
     {
-        //
-	    return view("admin.goods.add");
+        $brandModel = new BrandModel();
+        $brandList = $brandModel->getColumns([],['id','name']);
+        $data['brandList'] = $brandList;
+	    return view("admin.goods.add",$data);
     }
 
     /**
@@ -57,7 +60,7 @@ class GoodsController extends Controller
         //
 	    $input = $request->all();
 	    $model = new GoodsService();
-        $input['add_uid'] = session('user_info.id');
+
 	    $res = $model->createGoods($input);
 	    if ($res){
 	    	return $this->success();
@@ -85,10 +88,10 @@ class GoodsController extends Controller
      */
     public function edit($id)
     {
-        $model = new GoodsModel();
-        $goodsInfo = $model->getInfo($id);
+        $goodsInfo = $this->model->getInfo($id);
         $brandModel = new BrandModel();
         $data['brand_list'] = $brandModel->getColumns([],['id','name']);
+        $this->model->formatGoods($goodsInfo);
         $data['goodsInfo'] = $goodsInfo;
         return view("admin.goods.editGoods",$data);
     }
@@ -104,7 +107,7 @@ class GoodsController extends Controller
     {
         $input = $request->all();
         $model = new GoodsService();
-        $input['update_uid'] = session('user_info.id');
+
         $res = $model->updateGoods($id,$input);
         if ($res){
             return $this->success();
@@ -155,6 +158,7 @@ class GoodsController extends Controller
     public function editGoodsAttr($attr_id){
         $model = new GoodsAttrModel();
         $attrInfo = $model->getInfo($attr_id);
+        $attrInfo['alias_name'] = Common::getTextFromMultiArr(unserialize($attrInfo['alias_name']));
         $data['attrInfo'] = $attrInfo;
         return view("admin.goods.editAttr",$data);
     }

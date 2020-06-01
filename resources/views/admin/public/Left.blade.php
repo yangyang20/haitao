@@ -72,7 +72,7 @@
                             <cite>导入文件列表</cite></a>
                     </li>
                     <li>
-                        <a onclick="xadmin.add_tab('导入模板列表','{{url('admin/project/create')}}')">
+                        <a onclick="xadmin.add_tab('导入模板列表','{{url('admin/import')}}')">
                             <i class="iconfont">&#xe6a7;</i>
                             <cite>导入模板列表</cite></a>
                     </li>

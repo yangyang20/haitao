@@ -10,9 +10,11 @@
 namespace App\Service;
 
 
+use App\Model\admin\DealerModel;
 use App\Model\admin\ImportLogModle;
 use App\Model\admin\ImportTplModel;
 use App\Model\admin\OrderModel;
+use App\Model\common\GoodsAttrModel;
 use App\Model\common\GoodsModel;
 use App\Tools\Common;
 
@@ -148,9 +150,11 @@ class ImportService extends CommonService
 	    $orderColumns = $this->getOrderColumns($tableConfig);
 
 		$orderData = $this->createOrderData($tplData,$orderColumns);
+
 		$res = $this->checkOrderData($orderData);
+        dd("123");
 		if ( empty($res['goodsWithout']) && empty($res['$attrWithout']) && $insert){
-			$this->insertData($file->name,$tplId,$tplInfo['dealer_id'],$tplInfo['table_name'],$tplData,$res['orderDetails']);
+			$this->insertAllData($file->name,$tplId,$tplInfo['dealer_id'],$tplInfo['table_name'],$tplData,$res['orderDetails']);
 		}
 	    return $res;
     }
@@ -213,7 +217,9 @@ class ImportService extends CommonService
 		foreach ($tplData as  $item){
 			$_item = [];
 			foreach ($orderColumns as $key=>$column){
-				$_item[$key] = $item[$column];
+			    if (!empty($item[$column])){
+                    $_item[$key] = $item[$column];
+                }
 			}
 			array_push($orderData,$_item);
 		}
@@ -225,7 +231,7 @@ class ImportService extends CommonService
      */
     public function checkOrderData($orderData){
     	$goodsModel = new GoodsModel();
-
+        $attrModel = new GoodsAttrModel();
 //    	找不到的商品
 	    $goodsWithout = [];
 //      找不到商品规格
@@ -238,31 +244,32 @@ class ImportService extends CommonService
 	    $orderDetails = [];
 
     	foreach ($orderData as $key=>$item){
-			$goodsInfo = $goodsModel->getInfoSelect([['goods_name','=',$item['goods_name']]]);
-	        if (!empty($goodsInfo)){
-				$goodsId = $goodsInfo['id'];
-	        }else{
-		        $goodsAliasInfo = $goodsModel->getAliasInfo([['alias_name','=',$item['goods_name']]]);
-	            if (!empty($goodsAliasInfo)){
-	            	$goodsId = $goodsAliasInfo['goods_id'];
-	            }
-	        }
-	        if (isset($goodsId)){
-	        	$item['goods_id'] = $goodsId;
-		        $attrAliasInfo = $goodsModel->getAliasInfo([['alias_name','=',$item['goods_name'],['goods_id','=',$goodsId]]],$goodsModel::ATTR_ALIAS);
-		        if (!empty($attrAliasInfo)){
-			        $attrId = $attrAliasInfo['attr_id'];
-			        $item['attr_id'] = $attrId;
-			        $item['attr_count'] = $attrAliasInfo['attr_count'];
-		        }else{
-		        	array_push($attrWithout,$item);
-		        	continue;
-		        }
+            $goodsAlias = "\"{$item['goods_name']}\"";
+    	    $goodsArr = $goodsModel->where('goods_name','=',$item['goods_name'])->orWhere('alias_name','like',"%{$goodsAlias}%")->get()->toArray();
 
-	        }else{
-	        	array_push($goodsWithout,$item);
-	        	continue;
-	        }
+    	    if (!empty($goodsArr)){
+                $attrAlias = "\"{$item['goods_attr_name']}\"";
+	            foreach ($goodsArr as $goods){
+                    $attrInfo = $attrModel->where([[['name','=',$item['goods_attr_name'],['goods_id','=',$goods['id']]]]])
+                                            ->orWhere([[['alias_name','like',$attrAlias,['goods_id','=',$goods['id']]]]])->first();
+                    dd($attrInfo);
+                    if (!empty($attrInfo)){
+                        $attrId = $attrInfo['attr_id'];
+                        $item['attr_id'] = $attrId;
+                        $item['attr_count'] = $attrInfo['attr_count'];
+                        $goodsId = $goods['id'];
+                        continue;
+                    }
+                }
+	            if (empty($attrInfo)){
+                    array_push($attrWithout,$item);
+                    continue;
+                }
+            }else{
+                array_push($goodsWithout,$item);
+                continue;
+            }
+
 //	        todo 这里只加了商品名称和商品规格的检测 ，还可以加其他的
 
 
@@ -307,6 +314,7 @@ class ImportService extends CommonService
 		    array_push($orderDetails,$order);
     	}
 
+
     	return [
     	    'goodsWithout'=>$goodsWithout,
 		    'attrWithout'=>$attrWithout,
@@ -319,7 +327,7 @@ class ImportService extends CommonService
 	/**
 	 * 插入数据
 	 */
-    public function insertData($file_name,$tpl_id,$dealer_id,$tableName,$tplData,$orderDetails){
+    public function insertAllData($file_name,$tpl_id,$dealer_id,$tableName,$tplData,$orderDetails){
 		$nowTime = time();
     	$importLog = [
 			'name'=>$file_name,
@@ -339,5 +347,13 @@ class ImportService extends CommonService
 		}
 		$orderModel = new OrderModel();
 		$orderModel->insertDataList($orderDetails);
+    }
+
+    /**
+     * 格式化展示数据
+     */
+    public function formatData(&$data){
+        $dealerModel = new DealerModel();
+        $data['dealer_name'] = $dealerModel->getColumnsValue([['id','=',$data['dealer_id']]],'name');
     }
 }

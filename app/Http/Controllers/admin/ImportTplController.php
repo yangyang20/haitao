@@ -23,9 +23,13 @@ class ImportTplController extends Controller
      */
     public function index()
     {
-        $importList = $this->modle->getColumnsValue();
 
-        return view("admin.import.index");
+        $importList = $this->modle->getList([]);
+        foreach ($importList as &$item){
+            $this->modle->formatData($item);
+        }
+        $data['importList'] = $importList;
+        return view("admin.import.index",$data);
     }
 
     /**

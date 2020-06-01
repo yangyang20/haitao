@@ -45,7 +45,7 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">产品别名</label>
                             <div class="layui-input-block">
-                                <textarea name="goods_alias_name" placeholder="请输入产品别名" class="layui-textarea">{{$goodsInfo->goods_alias_name}}</textarea>
+                                <textarea name="alias_name" placeholder="请输入产品别名" class="layui-textarea">{{$goodsInfo->alias_name}}</textarea>
                             </div>
                         </div>
                         <div class="layui-form-item">

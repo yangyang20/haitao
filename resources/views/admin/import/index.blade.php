@@ -75,7 +75,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($goodsList as $item)
+                        @foreach($importList as $item)
                             <tr>
                                 {{--<td>--}}
                                 {{--<div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='{{ $v->user_id }}'><i class="layui-icon">&#xe605;</i></div>--}}
@@ -100,8 +100,6 @@
                                     <a title="删除" onclick="member_del({{$item->id}})" href="javascript:;">
                                         <i class="layui-icon">&#xe640;</i>
                                     </a>
-                                    <button class="layui-btn layui-btn layui-btn-xs" onclick="xadmin.open('规格设置','{{url("admin/goods/attrIndex/{$item->id}")}}')"><i class="layui-icon"></i>添加规格</button>
-
                                 </td>
                             </tr>
                         @endforeach
@@ -110,7 +108,7 @@
                 </div>
                 <div class="layui-card-body ">
                     <div class="page">
-                        {!! $goodsList->render() !!}
+                        {!! $importList->render() !!}
                     </div>
                 </div>
 

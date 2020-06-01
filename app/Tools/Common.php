@@ -90,4 +90,21 @@ class Common
 		return $array;
 	}
 
+
+	/**
+     *将字符串转为数组
+     */
+    public static function getArrFromMultiText($text){
+        $text=str_replace(["\r\n","\r","\n"],'@',$text);
+        $arr=explode('@',$text);
+        return $arr;
+    }
+    /**
+     * 将数组转为字符串
+     */
+    public static function getTextFromMultiArr($arr){
+        $text = implode('@',$arr);
+        $text = str_replace('@',"\r",$text);
+        return $text;
+    }
 }
