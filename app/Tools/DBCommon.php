@@ -44,4 +44,28 @@ class DBCommon
 
         return $res;
     }
+
+
+    public static function alterTable($tableName,$filterArr){
+	    $_name = env('DB_PREFIX').$tableName;
+	    $db_name=env('DB_DATABASE');
+
+
+	    $filterSql="";
+	    foreach ($filterArr as $filter){
+		    $sql="select count(*) as  _count from information_schema.columns where table_schema= '{$db_name}' and table_name = '{$_name}' and column_name = '{$filter['filter']}'";
+		    $tableCheck = DB::select($sql);
+		    if ($tableCheck[0]->_count){
+			    throw new \Exception("字段{$filter['title']} {$filter['filter']}已存在，请联系技术");
+		    }
+		    $filterSql.="ADD `{$filter['filter']}` {$filter['type']}({$filter['length']}) {$filter['is_null']} COMMENT '{$filter['title']}',";
+	    }
+	    $filterSql = substr($filterSql,0,strrpos($filterSql,","));
+	    $sql="alter table `{$_name}` {$filterSql}";
+	    $sql = str_replace("\t",'',$sql);
+	    $sql = str_replace("\n",'',$sql);
+	    $res =  DB::statement($sql);
+	    return $res;
+
+    }
 }

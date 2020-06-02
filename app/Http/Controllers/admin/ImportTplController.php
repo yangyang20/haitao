@@ -106,7 +106,12 @@ class ImportTplController extends Controller
     public function update(Request $request, $id)
     {
         $input = $request->all();
-        $this->modle->updateData($input,$id);
+        $res = $this->modle->updateImportTpl($input,$id);
+        if ($res){
+        	return $this->success();
+        }else{
+        	return $this->error($this->modle->error);
+        }
     }
 
     /**

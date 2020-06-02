@@ -110,7 +110,7 @@ class ImportService extends CommonService
     public function createTableStructure($title,$filter="",$type='varchar',$length=255,$is_null=true,$tag_id=""){
         if (empty($filter)){
             $filter =Common::getPinYinFirstLetter($title);
-            $filter = strtolower($filter);
+            $filter = strtolower($filter)."_".rand(11,99);
         }
         return [
             'title'=>$title,
@@ -140,10 +140,10 @@ class ImportService extends CommonService
 		$table = ExcelCommon::import($file);
 		$tableTitle = $table[0];
 		unset($table[0]);
-	    $tableTitlePY = Common::pinYinTransform($tableTitle);
+//	    $tableTitlePY = Common::pinYinTransform($tableTitle);
 		$tplInfo = $this->model->getDataInfo($tplId);
 		$tableConfig = unserialize($tplInfo['table_config']);
-	    $filterArr = $this->filterTable($tableTitlePY,$tableConfig);
+	    $filterArr = $this->filterTable($tableTitle,$tableConfig);
 	    $tplData = $this->createTplData($table,$filterArr);
 	    $orderColumns = $this->getOrderColumns($tableConfig);
 		$orderData = $this->createOrderData($tplData,$orderColumns);
@@ -157,13 +157,13 @@ class ImportService extends CommonService
 	/**
 	 * 过滤模板中没有的字段
 	 */
-    public function filterTable($tableTitlePY,$tableConfig){
+    public function filterTable($tableTitle,$tableConfig){
 	    $filterArr = [];
 
 	    for ($i=0;$i<count($tableConfig);$i++){
-		    for ($j=0;$j<count($tableTitlePY);$j++){
-			    if ($tableConfig[$i]['filter'] == $tableTitlePY[$j]){
-				    $filterArr[$tableTitlePY[$j]] = $j;
+		    for ($j=0;$j<count($tableTitle);$j++){
+			    if ($tableConfig[$i]['title'] == $tableTitle[$j]){
+				    $filterArr[$tableConfig[$i]['filter']] = $j;
 				    continue;
 			    }
 		    }
@@ -356,10 +356,38 @@ class ImportService extends CommonService
 //        dd($data['table_config']);
     }
 
+	/**
+	 * 修改数据
+	 */
     public function updateImportTpl($data,$id){
-        $table = $data['table'];
-        foreach ($table as $item){
+	    DB::beginTransaction();
+	    try {
+		    $table = $data['table'];
+		    unset($data['table']);
+		    $info = $this->model->getDataInfo($id);
+		    $addFilter = [];
+		    foreach ($table as $key=>$item){
+			    if (empty($item['filter'])){
+				    $table[$key] = $this->createTableStructure($item['title'],"",$item['type'],self::$field_length[$item['type']],true,$item['tag_id']);
+				    array_push($addFilter,$table[$key]);
+			    }
+		    }
+		    $res = DBCommon::alterTable($info->table_name,$addFilter);
+		    if (empty($res)){
+			    throw new \Exception("数据字段添加修改失败");
+		    }
+		    $data['table_config'] = serialize($table);
+		    $u_res = $this->model->updateData($id,$data);
+		    if (empty($u_res)){
+			    throw new \Exception("tpl修改失败");
+		    }
+		    DB::commit();
+		    return true;
+	    }catch (\Exception $exception){
+	    	$this->error= $exception->getMessage();
+	    	DB::rollBack();
+	    	return false;
+	    }
 
-        }
     }
 }

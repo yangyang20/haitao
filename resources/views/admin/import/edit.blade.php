@@ -84,7 +84,7 @@
                         </thead>
                         <tbody class="config-list">
                         @foreach($info->table_config as $config_key=>$config_item)
-                        <tr class="item" data-index="0">
+                        <tr class="item" data-index="{{$config_key}}">
                             {{--                                    <td>--}}
                             {{--                                        <div class="layui-input-inline">--}}
                             {{--                                            <input type="text" class="layui-input " name="table[0][col]"  value="" placeholder="请输入列名" >--}}
@@ -98,7 +98,7 @@
                             </td>
                             <td>
                                 <div class="layui-input-inline">
-                                    <input type="text" class="layui-input" name="table[{{$config_key}}][filter]"  value="{{$config_item['filter']}}" placeholder="请输入字段名" >
+                                    <input type="text" class="layui-input" name="table[{{$config_key}}][filter]" readonly value="{{$config_item['filter']}}" placeholder="请输入字段名" >
                                 </div>
                                 <div class="layui-input-inline">
                                     <select  name="table[{{$config_key}}][type]">
@@ -107,13 +107,13 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="layui-input-inline">
-                                    <input type="text" class="w100 layui-input" name="table[{{$config_key}}][length]"  value="{{$config_item['length']}}" placeholder="请输入长度" >
-                                </div>
+{{--                                <div class="layui-input-inline">--}}
+{{--                                    <input type="text" class="w100 layui-input" name="table[{{$config_key}}][length]"  value="{{$config_item['length']}}" placeholder="请输入长度" >--}}
+{{--                                </div>--}}
                             </td>
                             <td>
                                 <div class="layui-input-inline">
-                                    <select  name="table[{{$config_key}}][tag_id]" lay-verify="required">
+                                    <select  name="table[{{$config_key}}][tag_id]">
                                         <option value="">请选择</option>
                                         @foreach($tpl_field_list as $item)
                                             <option value="{{$item->id}}" {{$config_item['tag_id'] == $item->id ? 'selected':''}}>{{$item->name}}</option>
@@ -231,9 +231,9 @@
             </div>
         </td>
         <td>
-            <div class="layui-input-inline">
-                <input type="text" class="layui-input" name="table[<%d.index%>][filter]"  value="" placeholder="请输入字段名" >
-            </div>
+{{--            <div class="layui-input-inline">--}}
+{{--                <input type="text" class="layui-input" name="table[<%d.index%>][filter]"  value="" placeholder="请输入字段名" >--}}
+{{--            </div>--}}
             <div class="layui-input-inline">
                 <select  name="table[<%d.index%>][type]">
                     @foreach($field_type_arr as $key=>$value)
@@ -241,13 +241,13 @@
                     @endforeach
                 </select>
             </div>
-            <div class="layui-input-inline">
-                <input type="text" class="w100 layui-input" name="table[<%d.index%>][length]"  value="" placeholder="请输入长度" >
-            </div>
+{{--            <div class="layui-input-inline">--}}
+{{--                <input type="text" class="w100 layui-input" name="table[<%d.index%>][length]"  value="" placeholder="请输入长度" >--}}
+{{--            </div>--}}
         </td>
         <td>
             <div class="layui-input-inline">
-                <select  name="table[<%d.index%>][tag_id]" lay-verify="required">
+                <select  name="table[<%d.index%>][tag_id]">
                     <option value="">请选择</option>
                     @foreach($tpl_field_list as $item)
                         <option value="{{$item->id}}" >{{$item->name}}</option>
