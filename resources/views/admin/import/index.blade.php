@@ -94,7 +94,7 @@
                                     <input type="checkbox" data-id="{{$item->id}}" value="{{$item->status}}" {{$item->status?'checked':''}} lay-filter="status" lay-skin="switch" lay-text="合作中|已暂停">
                                 </td>
                                 <td class="td-manage">
-                                    <a title="编辑"  onclick="xadmin.open('编辑','{{ url("admin/goods/{$item->id}/edit") }}')">
+                                    <a title="编辑"  onclick="xadmin.open('编辑','{{ url("admin/import/{$item->id}/edit") }}')">
                                         <i class="layui-icon">&#xe642;</i>
                                     </a>
                                     <a title="删除" onclick="member_del({{$item->id}})" href="javascript:;">

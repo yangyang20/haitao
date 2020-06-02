@@ -84,7 +84,16 @@ class ImportTplController extends Controller
      */
     public function edit($id)
     {
-        //
+        $importTplInfo = $this->modle->getInfo($id);
+        $this->modle->formatData($importTplInfo);
+        $data['info'] = $importTplInfo;
+        $dealerModel = new DealerModel();
+        $data['dealerList'] = $dealerModel->getColumns([],['id','name']);
+        $model = new ImportTplModel();
+        $tplFieldArr = $model->getTplField();
+        $data['tpl_field_list'] = $tplFieldArr;
+        $data['field_type_arr']=ImportService::$field_type;
+        return view("admin.import.edit",$data);
     }
 
     /**
@@ -96,7 +105,8 @@ class ImportTplController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $input = $request->all();
+        $this->modle->updateData($input,$id);
     }
 
     /**

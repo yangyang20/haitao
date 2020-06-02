@@ -143,17 +143,12 @@ class ImportService extends CommonService
 	    $tableTitlePY = Common::pinYinTransform($tableTitle);
 		$tplInfo = $this->model->getDataInfo($tplId);
 		$tableConfig = unserialize($tplInfo['table_config']);
-
 	    $filterArr = $this->filterTable($tableTitlePY,$tableConfig);
-
 	    $tplData = $this->createTplData($table,$filterArr);
 	    $orderColumns = $this->getOrderColumns($tableConfig);
-
 		$orderData = $this->createOrderData($tplData,$orderColumns);
-
 		$res = $this->checkOrderData($orderData);
-        dd("123");
-		if ( empty($res['goodsWithout']) && empty($res['$attrWithout']) && $insert){
+		if ( empty($res['goodsWithout']) && empty($res['attrWithout']) && $insert){
 			$this->insertAllData($file->name,$tplId,$tplInfo['dealer_id'],$tplInfo['table_name'],$tplData,$res['orderDetails']);
 		}
 	    return $res;
@@ -249,15 +244,18 @@ class ImportService extends CommonService
 
     	    if (!empty($goodsArr)){
                 $attrAlias = "\"{$item['goods_attr_name']}\"";
+
 	            foreach ($goodsArr as $goods){
-                    $attrInfo = $attrModel->where([[['name','=',$item['goods_attr_name'],['goods_id','=',$goods['id']]]]])
-                                            ->orWhere([[['alias_name','like',$attrAlias,['goods_id','=',$goods['id']]]]])->first();
-                    dd($attrInfo);
+
+                    $attrInfo = $attrModel->where([['attr_name','=',$item['goods_attr_name']],['goods_id','=',$goods['id']]])
+                                            ->orWhere([['attr_name','like',"%{$attrAlias}%"],['goods_id','=',$goods['id']]])
+                                         ->first();
                     if (!empty($attrInfo)){
                         $attrId = $attrInfo['attr_id'];
                         $item['attr_id'] = $attrId;
                         $item['attr_count'] = $attrInfo['attr_count'];
                         $goodsId = $goods['id'];
+                        $item['goods_id'] = $goodsId;
                         continue;
                     }
                 }
@@ -289,7 +287,6 @@ class ImportService extends CommonService
 				    'order_count'=>1,
 			    ];
 	        }
-
 
 
 			$orderCount+=1;
@@ -355,5 +352,14 @@ class ImportService extends CommonService
     public function formatData(&$data){
         $dealerModel = new DealerModel();
         $data['dealer_name'] = $dealerModel->getColumnsValue([['id','=',$data['dealer_id']]],'name');
+        $data['table_config'] = unserialize($data['table_config']);
+//        dd($data['table_config']);
+    }
+
+    public function updateImportTpl($data,$id){
+        $table = $data['table'];
+        foreach ($table as $item){
+
+        }
     }
 }
