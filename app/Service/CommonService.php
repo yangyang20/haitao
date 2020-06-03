@@ -13,7 +13,11 @@ namespace App\Service;
 class CommonService
 {
     public $model;
-    public $error;
+    public static $error;
+
+    public static function getError(){
+        return self::$error;
+    }
 
     //公共的增删改查
 

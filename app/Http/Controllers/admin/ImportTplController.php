@@ -5,9 +5,12 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Model\admin\DealerModel;
 use App\Model\admin\ImportTplModel;
+use App\Service\CommonService;
 use App\Service\ImportService;
 use App\Tools\ExcelCommon;
+use Faker\Provider\File;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ImportTplController extends Controller
 {
@@ -143,17 +146,36 @@ class ImportTplController extends Controller
 		$tplId = $request->input('tpl_id');
 	    $model = new ImportService();
 	    $res = $model->checkImportOrder($file,$tplId);
-
-	    if ($res['goodsWithout'] || $res['attrWithout']){
+	    if ($res == false){
+	        unset($file);
+	        return $this->error();
+        }elseif ($res['goodsWithout'] || $res['attrWithout']){
+	        unset($file);
 		    $html= view('admin.import.importNotfound',$res)->render();
 		    $data['html'] = $html;
 		    return $this->error('请检查',$data);
 	    }else{
+	        $path=$file->store("orderFile");
+	        $data['filePath'] = $path;
 		    $html= view('admin.import.ImportPreview',$res)->render();
 		    $data['html'] = $html;
 		    return $this->success('请查看预览',$data);
 	    }
+    }
 
-
+    /**
+     * 上传插入
+     */
+    public function importOrderInsert(Request $request){
+        $path = $request->input('file_path');
+        $fileName = $request->input('file_name');
+        $tplId = $request->input('tpl_id');
+        $model = new ImportService();
+        $res = $model->checkImportOrder( $path,$tplId,true,$fileName);
+        if ($res == true){
+           return $this->success();
+        }else{
+           return $this->error($this->modle->error);
+        }
     }
 }

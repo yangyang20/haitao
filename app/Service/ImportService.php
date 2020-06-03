@@ -20,6 +20,7 @@ use App\Tools\Common;
 
 use App\Tools\DBCommon;
 use App\Tools\ExcelCommon;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -54,7 +55,7 @@ class ImportService extends CommonService
      */
     public function createImportTpl($input){
         DB::beginTransaction();
-        try {
+//        try {
             $validator = Validator::make($input, [
                 'name' => 'required|max:255',
                 'dealer_id' => 'required',
@@ -97,11 +98,11 @@ class ImportService extends CommonService
             }
             DB::commit();
             return true;
-        }catch (\Exception $exception){
-            DB::rollBack();
-            $this->error = $exception->getMessage();
-            return false;
-        }
+//        }catch (\Exception $exception){
+//            DB::rollBack();
+//            self::$error = $exception;
+//            return false;
+//        }
     }
 
     /**
@@ -126,32 +127,40 @@ class ImportService extends CommonService
      * 添加固定的元素
      */
     public function addTableFilter($table){
-        $filter = $this->createTableStructure('文件模板id','import_tpl_id','int',5,false);
+        $filter = $this->createTableStructure('导入的文件日志id','import_log_id','int',5,false);
         array_push($table,$filter);
-        $filter = $this->createTableStructure('导入的文件id','file_id','int',11,false);
-        array_push($table,$filter);
+//        $filter = $this->createTableStructure('导入的文件id','file_id','int',11,false);
+//        array_push($table,$filter);
         return $table;
     }
 
 	/**
 	 * 检查导入的数据
 	 */
-    public function checkImportOrder($file,$tplId,$insert=false){
-		$table = ExcelCommon::import($file);
-		$tableTitle = $table[0];
-		unset($table[0]);
+    public function checkImportOrder($file,$tplId,$insert=false,$fileName=" "){
+        try {
+            $table = ExcelCommon::import($file);
+            $tableTitle = $table[0];
+            unset($table[0]);
 //	    $tableTitlePY = Common::pinYinTransform($tableTitle);
-		$tplInfo = $this->model->getDataInfo($tplId);
-		$tableConfig = unserialize($tplInfo['table_config']);
-	    $filterArr = $this->filterTable($tableTitle,$tableConfig);
-	    $tplData = $this->createTplData($table,$filterArr);
-	    $orderColumns = $this->getOrderColumns($tableConfig);
-		$orderData = $this->createOrderData($tplData,$orderColumns);
-		$res = $this->checkOrderData($orderData);
-		if ( empty($res['goodsWithout']) && empty($res['attrWithout']) && $insert){
-			$this->insertAllData($file->name,$tplId,$tplInfo['dealer_id'],$tplInfo['table_name'],$tplData,$res['orderDetails']);
-		}
-	    return $res;
+            $tplInfo = $this->model->getDataInfo($tplId);
+            $tableConfig = unserialize($tplInfo['table_config']);
+            $filterArr = $this->filterTable($tableTitle,$tableConfig);
+            $tplData = $this->createTplData($table,$filterArr);
+            $orderColumns = $this->getOrderColumns($tableConfig);
+            $orderData = $this->createOrderData($tplData,$orderColumns);
+            $res = $this->checkOrderData($orderData);
+            if ( empty($res['goodsWithout']) && empty($res['attrWithout']) && $insert){
+                $result = $this->insertAllData($fileName,$tplId,$tplInfo['dealer_id'],$tplInfo['table_name'],$tplData,$res['orderDetails']);
+                Storage::delete($file);
+                return $result;
+            }
+            return $res;
+        }catch (\Exception $exception){
+            self::$error = $exception;
+            return false;
+        }
+
     }
 
 	/**
@@ -168,7 +177,6 @@ class ImportService extends CommonService
 			    }
 		    }
 	    }
-
 	    return $filterArr;
     }
 
@@ -176,6 +184,9 @@ class ImportService extends CommonService
 	 * 组装模板表数据
 	 */
     public function createTplData($table,$filterArr){
+//        找到必须的字段
+        $mustTplFiled = $this->model->getTplField([['is_null','=',$this->model::TPL_IS_MUST]]);
+
 	    $data=[];
 	    foreach ($table as $item){
 		    $columns=[];
@@ -184,6 +195,7 @@ class ImportService extends CommonService
 		    }
 		    array_push($data,$columns);
 	    }
+	    dd($data);
 	    return $data;
     }
 
@@ -237,9 +249,12 @@ class ImportService extends CommonService
         $orderCount=0;
 //        插入到订单表的数据详情
 	    $orderDetails = [];
-
     	foreach ($orderData as $key=>$item){
+            if (!isset($item['goods_name'])){
+                dd($item);
+            }
             $goodsAlias = "\"{$item['goods_name']}\"";
+
     	    $goodsArr = $goodsModel->where('goods_name','=',$item['goods_name'])->orWhere('alias_name','like',"%{$goodsAlias}%")->get()->toArray();
 
     	    if (!empty($goodsArr)){
@@ -251,7 +266,7 @@ class ImportService extends CommonService
                                             ->orWhere([['attr_name','like',"%{$attrAlias}%"],['goods_id','=',$goods['id']]])
                                          ->first();
                     if (!empty($attrInfo)){
-                        $attrId = $attrInfo['attr_id'];
+                        $attrId = $attrInfo['id'];
                         $item['attr_id'] = $attrId;
                         $item['attr_count'] = $attrInfo['attr_count'];
                         $goodsId = $goods['id'];
@@ -276,7 +291,7 @@ class ImportService extends CommonService
 
 
 			$temp = $goodsId."_".$attrId;
-		    if (isset($goodsOrderDetails[$temp])){
+		    if (isset($goodsOrderAggregate[$temp])){
 			    $goodsOrderAggregate[$temp]['goods_count'] +=$item['goods_count'];
 			    $goodsOrderAggregate[$temp]['order_count'] +=1;
 		    }else{
@@ -287,26 +302,24 @@ class ImportService extends CommonService
 				    'order_count'=>1,
 			    ];
 	        }
-
-
 			$orderCount+=1;
 		    $order = [
-		        'goods_id'=>$item['goods_id'],
-			    'goods_name'=>$item['goods_name'],
-			    'goods_attr_name'=>$item['goods_attr_name'],
-			    'goods_attr_id'=>$item['attr_id'],
-			    'goods_attr_count'=>$item['attr_count'],
-			    'goods_count'=>$item['goods_count'],
-			    'order_sn'=>$item['order_sn'],
-			    'order_time'=>$item['order_time'],
-			    'consignee'=>$item['consignee'],
-			    'consignee_mobile'=>$item['consignee_mobile'],
-			    'province'=>$item['province'],
-			    'city'=>$item['city'],
-			    'district'=>$item['district'],
-			    'address'=>$item['address'],
-			    'buyer_remark'=>$item['buyer_remark'],
-			    'remark'=>$item['remark']
+		        'goods_id'=>isset($item['goods_id'])?$item['goods_id']:'',
+			    'goods_name'=>isset($item['goods_name'])?$item['goods_name']:'',
+			    'goods_attr_name'=>isset($item['goods_attr_name'])?$item['goods_attr_name']:'',
+			    'goods_attr_id'=>isset($item['attr_id'])?$item['attr_id']:'',
+			    'goods_attr_count'=>isset($item['attr_count'])?$item['attr_count']:'',
+			    'goods_count'=>isset($item['goods_count'])?$item['goods_count']:'',
+			    'order_sn'=>isset($item['order_sn'])?$item['order_sn']:'',
+			    'order_time'=>isset($item['order_time'])?$item['order_time']:'',
+			    'consignee'=>isset($item['consignee'])?$item['consignee']:'',
+			    'consignee_mobile'=>isset($item['consignee_mobile'])?$item['consignee_mobile']:'',
+			    'province'=>isset($item['province'])?$item['province']:'',
+			    'city'=>isset($item['city'])?$item['city']:'',
+			    'district'=>isset($item['district'])?$item['district']:'',
+			    'address'=>isset($item['address'])?$item['address']:'',
+			    'buyer_remark'=>isset($item['buyer_remark'])?$item['buyer_remark']:'',
+			    'remark'=>isset($item['remark'])?$item['remark']:''
 		    ];
 		    array_push($orderDetails,$order);
     	}
@@ -325,25 +338,42 @@ class ImportService extends CommonService
 	 * 插入数据
 	 */
     public function insertAllData($file_name,$tpl_id,$dealer_id,$tableName,$tplData,$orderDetails){
-		$nowTime = time();
-    	$importLog = [
-			'name'=>$file_name,
-			'import_tpl_id'=>$tpl_id,
-			'dealer_id'=>$dealer_id,
-			'add_time'=>$nowTime,
-			'add_uid'=>session('user_info.id'),
-			'add_username'=>session('user_info.user_name')
-		];
-		$importLogModel = new ImportLogModle();
-		$import_log_id = $importLogModel->insertData($importLog);
-	    $importLogModel->insertImportExcelData($tableName,$tplData);
-		foreach ($orderDetails as &$item){
-			$item['import_log_id'] = $import_log_id;
-			$item['dealer_id'] = $dealer_id;
-			$item['add_time'] = $nowTime;
-		}
-		$orderModel = new OrderModel();
-		$orderModel->insertDataList($orderDetails);
+        DB::beginTransaction();
+        try {
+            $nowTime = time();
+            $importLog = [
+                'name'=>$file_name,
+                'import_tpl_id'=>$tpl_id,
+                'dealer_id'=>$dealer_id,
+                'add_time'=>$nowTime,
+                'add_uid'=>session('user_info.id'),
+                'add_name'=>session('user_info.real_name')
+            ];
+            $importLogModel = new ImportLogModle();
+            $import_log_id = $importLogModel->insertData($importLog);
+            foreach ($tplData as &$i_data){
+                $i_data['add_uid'] = session('user_info.id');
+                $i_data['import_log_id'] = $import_log_id;
+                $i_data['add_time'] = $nowTime;
+            }
+            $importLogModel->insertImportExcelData($tableName,$tplData);
+            foreach ($orderDetails as &$item){
+                $item['import_log_id'] = $import_log_id;
+                $item['dealer_id'] = $dealer_id;
+                $item['add_time'] = $nowTime;
+                $item['add_uid'] = session('user_info.id');
+                $item['add_name']= session('user_info.real_name');
+            }
+            $orderModel = new OrderModel();
+            $orderModel->insertDataList($orderDetails);
+            DB::commit();
+            return true;
+        }catch (\Exception $exception){
+            self::$error = $exception->getMessage();
+            DB::rollBack();
+            return false;
+        }
+
     }
 
     /**
@@ -384,7 +414,7 @@ class ImportService extends CommonService
 		    DB::commit();
 		    return true;
 	    }catch (\Exception $exception){
-	    	$this->error= $exception->getMessage();
+	    	self::$error= $exception;
 	    	DB::rollBack();
 	    	return false;
 	    }

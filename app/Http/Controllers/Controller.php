@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Service\CommonService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -23,7 +24,10 @@ class Controller extends BaseController
     }
 
 
-    public function error($msg='操作失败',$data=[],$status=0){
+    public function error($msg='',$data=[],$status=0){
+        if (empty($msg)){
+            $msg =  '操作失败'.CommonService::getError();
+        }
         return [
             'status'=>$status,
             'msg'=>$msg,

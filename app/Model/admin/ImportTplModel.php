@@ -30,6 +30,9 @@ class ImportTplModel extends Model
     //    活跃
     const STATUS_ACTIVE = 1;
 
+//    模板字段是否必填
+    const TPL_IS_MUST = 1;
+    const TPL_IS_NULL = 0;
 
     public function getDataSelect($map = [], $columns = ['*'], $order = 'id', $sort = 'asc')
     {
