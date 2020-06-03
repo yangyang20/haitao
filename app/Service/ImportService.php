@@ -55,7 +55,7 @@ class ImportService extends CommonService
      */
     public function createImportTpl($input){
         DB::beginTransaction();
-//        try {
+        try {
             $validator = Validator::make($input, [
                 'name' => 'required|max:255',
                 'dealer_id' => 'required',
@@ -98,11 +98,11 @@ class ImportService extends CommonService
             }
             DB::commit();
             return true;
-//        }catch (\Exception $exception){
-//            DB::rollBack();
-//            self::$error = $exception;
-//            return false;
-//        }
+        }catch (\Exception $exception){
+            DB::rollBack();
+            self::$error = $exception;
+            return false;
+        }
     }
 
     /**
@@ -177,6 +177,7 @@ class ImportService extends CommonService
 			    }
 		    }
 	    }
+
 	    return $filterArr;
     }
 
@@ -184,8 +185,6 @@ class ImportService extends CommonService
 	 * 组装模板表数据
 	 */
     public function createTplData($table,$filterArr){
-//        找到必须的字段
-        $mustTplFiled = $this->model->getTplField([['is_null','=',$this->model::TPL_IS_MUST]]);
 
 	    $data=[];
 	    foreach ($table as $item){
@@ -195,7 +194,7 @@ class ImportService extends CommonService
 		    }
 		    array_push($data,$columns);
 	    }
-	    dd($data);
+
 	    return $data;
     }
 
@@ -219,14 +218,29 @@ class ImportService extends CommonService
     /**
      * 拼接订单数据
      */
-    public function createOrderData($tplData,$orderColumns){
-    	$orderData=[];
-		foreach ($tplData as  $item){
+    public function createOrderData(&$tplData,$orderColumns){
+	    //        找到必须的字段
+	    $mustTplField = $this->model->getTplField([['is_null','=',$this->model::TPL_IS_MUST]]);
+
+	    $orderData=[];
+		foreach ($tplData as $data_key=>$item){
 			$_item = [];
 			foreach ($orderColumns as $key=>$column){
 			    if (!empty($item[$column])){
                     $_item[$key] = $item[$column];
                 }
+			}
+			$is_null = false;
+//			关键数据没有则删除该行 避免插入空行
+			foreach ($mustTplField as $field){
+				if (empty($_item[$field->order_columns])){
+					$is_null = true;
+					break;
+				}
+			}
+			if ($is_null){
+				unset($tplData[$data_key]);
+				continue;
 			}
 			array_push($orderData,$_item);
 		}

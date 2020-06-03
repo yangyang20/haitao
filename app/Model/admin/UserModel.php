@@ -46,7 +46,7 @@ class UserModel extends Model
                 throw new \Exception('密码错误');
             }
             if ($lastIp){
-                $this->where('id',$user['id'])->update(['last_login_ip'=>$lastIp]);
+                $this->where('id',$user['id'])->update(['last_login_ip'=>$lastIp,'last_login_date'=>date("Y-m-d H:i:s")]);
             }
 //            dd($user);
             session(['user_info'=>$user]);

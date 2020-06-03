@@ -44,4 +44,5 @@ Route::group(['prefix'=>'admin','namespace'=>'admin','middleware'=>'checkLogin']
     Route::resource("brand","BrandController");
     Route::resource("dealer","DealerController");
     Route::resource("order","OrderController");
+    Route::resource("user",'UserController');
 });

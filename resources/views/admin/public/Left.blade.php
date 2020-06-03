@@ -13,7 +13,7 @@
 {{--                            <cite>统计页面</cite></a>--}}
 {{--                    </li>--}}
                     <li>
-                        <a onclick="xadmin.add_tab('用户列表','{{asset('admin/user')}}')">
+                        <a onclick="xadmin.add_tab('用户列表','{{url('admin/user')}}')">
                             <i class="iconfont">&#xe6a7;</i>
                             <cite>用户列表</cite></a>
                     </li>
