@@ -26,7 +26,8 @@ class Controller extends BaseController
 
     public function error($msg='',$data=[],$status=0){
         if (empty($msg)){
-            $msg =  '操作失败'.CommonService::getError();
+            $error = CommonService::getError();
+            $msg =  '操作失败'.$error->getMessage()."【文件】:".$error->getFile()."【行数】:".$error->getLine();
         }
         return [
             'status'=>$status,

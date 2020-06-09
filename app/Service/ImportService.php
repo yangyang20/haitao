@@ -432,6 +432,14 @@ class ImportService extends CommonService
 	    	DB::rollBack();
 	    	return false;
 	    }
+    }
 
+    /**
+     *格式化导入日志列表
+     */
+    public function formatImportLogData(&$data){
+        $dealerModel = new DealerModel();
+        $data['dealer_name'] = $dealerModel->getColumnsValue([['id','=',$data['dealer_id']]],'name');
+        $data['import_tpl_name'] = $this->model->getColumnsValue([['id','=',$data['import_tpl_id']]], 'name');
     }
 }

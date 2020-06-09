@@ -122,7 +122,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <a class="layui-btn layui-btn-sm layui-btn-danger" href="javascript:remItem($(this))">删除</a>
+                                        <button class="layui-btn layui-btn-sm layui-btn-danger" onclick="remItem($(this))">删除</button>
                                     </td>
                                 </tr>
 
@@ -255,7 +255,7 @@
             </div>
         </td>
         <td>
-            <a class="layui-btn layui-btn-sm layui-btn-danger" href="javascript:remItem($(this))">删除</a>
+            <button class="layui-btn layui-btn-sm layui-btn-danger" onclick="remItem($(this))">删除</button>
         </td>
     </tr>
 

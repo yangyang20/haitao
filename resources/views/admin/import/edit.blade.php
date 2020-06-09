@@ -122,7 +122,7 @@
                                 </div>
                             </td>
                             <td>
-                                <a class="layui-btn layui-btn-sm layui-btn-danger" href="javascript:remItem($(this))">删除</a>
+                                <button class="layui-btn layui-btn-sm layui-btn-danger" onclick="remItem($(this))">删除</button>
                             </td>
                         </tr>
                         @endforeach
@@ -207,15 +207,18 @@
         }
         exports('addItem', addItem);
 
-    });
 
+
+    });
 
 
     //删除行
     function remItem(present) {
-        let parent = present.parents('tr')
+        let parent = present.parents('.item')
         parent.remove()
     }
+
+
 </script>
 
 
@@ -256,7 +259,7 @@
             </div>
         </td>
         <td>
-            <a class="layui-btn layui-btn-sm layui-btn-danger" href="javascript:remItem($(this))">删除</a>
+            <button class="layui-btn layui-btn-sm layui-btn-danger" onclick="remItem($(this))">删除</button>
         </td>
     </tr>
 </script>

@@ -15,6 +15,11 @@ class CommonService
     public $model;
     public static $error;
 
+    public function __construct($model)
+    {
+        $this->model = $model;
+    }
+
     public static function getError(){
         return self::$error;
     }

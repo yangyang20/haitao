@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use App\Model\admin\DealerModel;
+use App\Model\admin\ImportLogModle;
 use App\Model\admin\ImportTplModel;
 use App\Service\CommonService;
 use App\Service\ImportService;
@@ -64,7 +65,7 @@ class ImportTplController extends Controller
         if ($res){
             return $this->success();
         }else{
-            return $this->error($model->error);
+            return $this->error();
         }
     }
 
@@ -113,7 +114,7 @@ class ImportTplController extends Controller
         if ($res){
         	return $this->success();
         }else{
-        	return $this->error($this->modle->error);
+        	return $this->error();
         }
     }
 
@@ -175,7 +176,20 @@ class ImportTplController extends Controller
         if ($res == true){
            return $this->success();
         }else{
-           return $this->error($this->modle->error);
+           return $this->error();
         }
+    }
+
+    /**
+     * 导入文件列表
+     */
+    public function importLogIndex(){
+        $model = new CommonService(new ImportLogModle());
+        $logList = $model->getList([]);
+        foreach ($logList as &$item){
+            $this->modle->formatImportLogData($item);
+        }
+        $data['logList'] = $logList;
+        return view("admin.import.importLogIndex",$data);
     }
 }
