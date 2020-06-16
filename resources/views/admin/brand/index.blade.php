@@ -33,15 +33,11 @@
                 <div class="layui-card-body ">
                     <form class="layui-form layui-col-space5">
                         <div class="layui-inline layui-show-xs-block">
-                            <input type="text" name="id" placeholder="请输入商品id" value="" autocomplete="off"
+                            <input type="text" name="name" placeholder="请输入品牌方名称" value="" autocomplete="off"
                                    class="layui-input">
                         </div>
                         <div class="layui-inline layui-show-xs-block">
-                            <input type="text" name="goods_name" placeholder="请输入商品名称或者别名" value="" autocomplete="off"
-                                   class="layui-input w200">
-                        </div>
-                        <div class="layui-inline layui-show-xs-block">
-                            <input type="text" name="brand_name" placeholder="请输入品牌方" value="" autocomplete="off"
+                            <input type="text" name="add_name" placeholder="请输入添加人" value="" autocomplete="off"
                                    class="layui-input">
                         </div>
                         <div class="layui-inline layui-show-xs-block">

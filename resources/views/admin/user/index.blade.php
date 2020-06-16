@@ -33,15 +33,11 @@
 				<div class="layui-card-body ">
 					<form class="layui-form layui-col-space5">
 						<div class="layui-inline layui-show-xs-block">
-							<input type="text" name="id" placeholder="请输入商品id" value="" autocomplete="off"
+							<input type="text" name="user_name" placeholder="请输入用户名称" value="" autocomplete="off"
 							       class="layui-input">
 						</div>
 						<div class="layui-inline layui-show-xs-block">
-							<input type="text" name="goods_name" placeholder="请输入商品名称或者别名" value="" autocomplete="off"
-							       class="layui-input w200">
-						</div>
-						<div class="layui-inline layui-show-xs-block">
-							<input type="text" name="brand_name" placeholder="请输入品牌方" value="" autocomplete="off"
+							<input type="text" name="real_name" placeholder="请输入姓名" value="" autocomplete="off"
 							       class="layui-input">
 						</div>
 						<div class="layui-inline layui-show-xs-block">
@@ -55,7 +51,7 @@
 					{{--								class="layui-icon"></i>添加--}}
 					{{--					</button>--}}
 				</div>
-				
+
 				<div class="layui-card-body layui-table-body layui-table-main">
 					<table class="layui-table layui-form">
 						<thead>
@@ -111,7 +107,7 @@
 						{!! $userList->render() !!}
 					</div>
 				</div>
-			
+
 			</div>
 		</div>
 	</div>

@@ -33,7 +33,7 @@
 				<div class="layui-card-body ">
 					<form class="layui-form layui-col-space5">
 						<div class="layui-inline layui-show-xs-block">
-							<input type="text" name="id" placeholder="请输入商品id" value="" autocomplete="off"
+							<input type="text" name="id" placeholder="请输入订单id" value="" autocomplete="off"
 										 class="layui-input">
 						</div>
 						<div class="layui-inline layui-show-xs-block">
