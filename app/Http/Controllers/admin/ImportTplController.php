@@ -185,6 +185,7 @@ class ImportTplController extends Controller
      */
     public function importLogIndex(){
         $model = new CommonService(new ImportLogModle());
+
         $logList = $model->getList([]);
         foreach ($logList as &$item){
             $this->modle->formatImportLogData($item);
